@@ -1,6 +1,7 @@
 ---
 import MotifDivider from '../ui/MotifDivider.astro';
 import Button from '../ui/Button.astro';
+import { url } from '../../utils/paths';
 ---
 
 <section class="section section--accent mission-teaser">
@@ -14,7 +15,7 @@ import Button from '../ui/Button.astro';
       Community involvement is not peripheral — it is intrinsic to the work of reclaiming ancestral marks.
     </p>
     <div class="animate-on-scroll">
-      <Button href="/about" variant="primary">About Our Mission</Button>
+      <Button href={url('/about')} variant="primary">About Our Mission</Button>
     </div>
     <MotifDivider />
   </div>

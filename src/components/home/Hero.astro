@@ -1,5 +1,6 @@
 ---
 import Button from '../ui/Button.astro';
+import { url } from '../../utils/paths';
 ---
 
 <section class="hero">
@@ -13,8 +14,8 @@ import Button from '../ui/Button.astro';
       A community-rooted podcast and project promoting body sovereignty through Indigenous Mississippian identity and cultural tattooing practices.
     </p>
     <div class="hero__actions animate-on-scroll">
-      <Button href="/episodes" variant="primary" size="lg">Listen Now</Button>
-      <Button href="/about" variant="outline" size="lg">Learn More</Button>
+      <Button href={url('/episodes')} variant="primary" size="lg">Listen Now</Button>
+      <Button href={url('/about')} variant="outline" size="lg">Learn More</Button>
     </div>
   </div>
 </section>

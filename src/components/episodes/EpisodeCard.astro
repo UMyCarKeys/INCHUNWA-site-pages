@@ -1,4 +1,6 @@
 ---
+import { url } from '../../utils/paths';
+
 interface Props {
   id: string;
   title: string;
@@ -11,10 +13,11 @@ interface Props {
 }
 
 const { id, title, description, pubDate, duration, series, episodeNumber, audioUrl } = Astro.props;
+const episodeUrl = url(`/episodes/${id}`);
 ---
 
 <article class="episode-card hover-lift" data-series={series || 'all'}>
-  <a href={`/episodes/${id}`} class="episode-card__link">
+  <a href={episodeUrl} class="episode-card__link">
     <div class="episode-card__meta">
       {series && <span class="episode-card__series">{series}</span>}
       {episodeNumber && <span class="episode-card__number">Ep. {episodeNumber}</span>}
@@ -33,7 +36,7 @@ const { id, title, description, pubDate, duration, series, episodeNumber, audioU
     aria-label={`Play ${title}`}
     data-audio-url={audioUrl}
     data-episode-title={title}
-    data-episode-url={`/episodes/${id}`}
+    data-episode-url={episodeUrl}
   >
     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
       <polygon points="5,3 19,12 5,21" />

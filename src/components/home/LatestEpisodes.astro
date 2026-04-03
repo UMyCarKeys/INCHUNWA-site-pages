@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import SectionHeading from '../ui/SectionHeading.astro';
 import Button from '../ui/Button.astro';
+import { url } from '../../utils/paths';
 
 const episodes = await getCollection('episodes', ({ data }) => !data.draft);
 const latestEpisodes = episodes
@@ -19,7 +20,7 @@ const latestEpisodes = episodes
 
     <div class="episodes-grid stagger-children">
       {latestEpisodes.map((episode) => (
-        <a href={`/episodes/${episode.id}`} class="episode-card animate-on-scroll hover-lift">
+        <a href={url(`/episodes/${episode.id}`)} class="episode-card animate-on-scroll hover-lift">
           <div class="episode-card__meta">
             {episode.data.series && (
               <span class="episode-card__series">{episode.data.series}</span>
@@ -41,7 +42,7 @@ const latestEpisodes = episodes
     </div>
 
     <div class="latest-episodes__cta text-center">
-      <Button href="/episodes" variant="outline">View All Episodes</Button>
+      <Button href={url('/episodes')} variant="outline">View All Episodes</Button>
     </div>
   </div>
 </section>

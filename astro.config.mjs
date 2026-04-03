@@ -4,7 +4,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://inchunwa.org',
+  site: 'https://umycarkeys.github.io',
+  base: '/INCHUNWA-site-pages',
   output: 'static',
   integrations: [sitemap()],
   build: {

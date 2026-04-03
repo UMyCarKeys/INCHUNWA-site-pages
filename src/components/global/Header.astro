@@ -1,6 +1,7 @@
 ---
 import Navigation from './Navigation.astro';
 import MobileMenu from './MobileMenu.astro';
+import { url } from '../../utils/paths';
 
 interface Props {
   currentPath?: string;
@@ -11,7 +12,7 @@ const { currentPath = '' } = Astro.props;
 
 <header class="site-header">
   <div class="container header-inner">
-    <a href="/" class="logo" aria-label="Inchunwa Project — Home">
+    <a href={url('/')} class="logo" aria-label="Inchunwa Project — Home">
       <span class="logo-text">Inchunwa</span>
       <span class="logo-subtitle">Project</span>
     </a>

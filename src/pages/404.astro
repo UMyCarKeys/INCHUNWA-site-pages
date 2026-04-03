@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/ui/Button.astro';
+import { url } from '../utils/paths';
 ---
 
 <PageLayout title="Page Not Found" noIndex={true}>
@@ -12,8 +13,8 @@ import Button from '../components/ui/Button.astro';
         The page you're looking for doesn't exist or has been moved.
       </p>
       <div class="not-found__actions">
-        <Button href="/" variant="primary">Go Home</Button>
-        <Button href="/episodes" variant="outline">Browse Episodes</Button>
+        <Button href={url('/')} variant="primary">Go Home</Button>
+        <Button href={url('/episodes')} variant="outline">Browse Episodes</Button>
       </div>
     </div>
   </section>

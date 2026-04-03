@@ -1,12 +1,14 @@
 ---
+import { url } from '../../utils/paths';
+
 const currentYear = new Date().getFullYear();
 
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/episodes', label: 'Episodes' },
-  { href: '/contact', label: 'Contact' },
-  { href: '/support', label: 'Support Us' },
+  { href: url('/'), label: 'Home' },
+  { href: url('/about'), label: 'About' },
+  { href: url('/episodes'), label: 'Episodes' },
+  { href: url('/contact'), label: 'Contact' },
+  { href: url('/support'), label: 'Support Us' },
 ];
 
 const socialLinks = [
@@ -21,7 +23,7 @@ const socialLinks = [
     <div class="footer-grid">
       <!-- Brand -->
       <div class="footer-brand">
-        <a href="/" class="footer-logo">
+        <a href={url('/')} class="footer-logo">
           <span class="footer-logo-text">Inchunwa</span>
           <span class="footer-logo-sub">Project</span>
         </a>
@@ -58,7 +60,7 @@ const socialLinks = [
       <div class="footer-listen">
         <h3 class="footer-heading">Listen</h3>
         <ul class="footer-links">
-          <li><a href="/rss.xml">RSS Feed</a></li>
+          <li><a href={url('/rss.xml')}>RSS Feed</a></li>
           <li><a href="#" target="_blank" rel="noopener noreferrer">Apple Podcasts</a></li>
           <li><a href="#" target="_blank" rel="noopener noreferrer">Spotify</a></li>
         </ul>

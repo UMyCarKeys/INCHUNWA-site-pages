@@ -1,5 +1,6 @@
 ---
 import Button from '../ui/Button.astro';
+import { url } from '../../utils/paths';
 ---
 
 <section class="section cta-section">
@@ -11,7 +12,7 @@ import Button from '../ui/Button.astro';
         <p class="cta-card__text">
           Your contribution directly supports podcast production, educational resources, and the ongoing work of cultural revitalization.
         </p>
-        <Button href="/support" variant="primary">Support Us</Button>
+        <Button href={url('/support')} variant="primary">Support Us</Button>
       </div>
 
       <!-- Newsletter CTA -->
@@ -20,7 +21,7 @@ import Button from '../ui/Button.astro';
         <p class="cta-card__text">
           Follow us on social media to stay updated on new episodes, community events, and educational resources.
         </p>
-        <Button href="/contact" variant="outline">Get in Touch</Button>
+        <Button href={url('/contact')} variant="outline">Get in Touch</Button>
       </div>
     </div>
   </div>

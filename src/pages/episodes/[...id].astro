@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import EpisodeLayout from '../../layouts/EpisodeLayout.astro';
 import Button from '../../components/ui/Button.astro';
 import Tag from '../../components/ui/Tag.astro';
+import { url } from '../../utils/paths';
 
 export async function getStaticPaths() {
   const episodes = await getCollection('episodes', ({ data }) => !data.draft);
@@ -37,7 +38,7 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
     {/* Episode Header */}
     <header class="episode-header">
       <div class="container container--narrow">
-        <a href="/episodes" class="episode-back">&larr; All Episodes</a>
+        <a href={url('/episodes')} class="episode-back">&larr; All Episodes</a>
 
         <div class="episode-meta">
           {series && <span class="episode-series">{series}</span>}
@@ -63,7 +64,7 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
             aria-label={`Play ${title}`}
             data-audio-url={audioUrl}
             data-episode-title={title}
-            data-episode-url={`/episodes/${episode.id}`}
+            data-episode-url={url(`/episodes/${episode.id}`)}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <polygon points="5,3 19,12 5,21" />
@@ -115,14 +116,14 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
       <div class="container container--narrow">
         <div class="episode-nav__grid">
           {prevEpisode ? (
-            <a href={`/episodes/${prevEpisode.id}`} class="episode-nav__link episode-nav__prev">
+            <a href={url(`/episodes/${prevEpisode.id}`)} class="episode-nav__link episode-nav__prev">
               <span class="episode-nav__label">&larr; Previous</span>
               <span class="episode-nav__title">{prevEpisode.data.title}</span>
             </a>
           ) : <div />}
 
           {nextEpisode ? (
-            <a href={`/episodes/${nextEpisode.id}`} class="episode-nav__link episode-nav__next">
+            <a href={url(`/episodes/${nextEpisode.id}`)} class="episode-nav__link episode-nav__next">
               <span class="episode-nav__label">Next &rarr;</span>
               <span class="episode-nav__title">{nextEpisode.data.title}</span>
             </a>
@@ -138,7 +139,7 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
         <p style="margin-block: var(--space-md); color: var(--text-secondary);">
           If this episode resonated with you, consider supporting our work.
         </p>
-        <Button href="/support" variant="primary">Support Us</Button>
+        <Button href={url('/support')} variant="primary">Support Us</Button>
       </div>
     </section>
   </article>
