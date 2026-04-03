@@ -82,7 +82,12 @@
 </div>
 
 <script>
-  function initAudioPlayer() {
+  // Use an IIFE to avoid polluting global scope and prevent duplicate listeners
+  (function () {
+    // Guard: only init once globally
+    if ((window as any).__inchunwaPlayerInit) return;
+    (window as any).__inchunwaPlayerInit = true;
+
     const player = document.getElementById('audio-player') as HTMLElement;
     const audio = document.getElementById('audio-element') as HTMLAudioElement;
     const titleEl = document.getElementById('player-title') as HTMLAnchorElement;
@@ -125,7 +130,7 @@
     // Play/Pause
     playBtn.addEventListener('click', () => {
       if (audio.paused) {
-        audio.play();
+        audio.play().catch(() => {});
       } else {
         audio.pause();
       }
@@ -175,13 +180,15 @@
       minimizeBtn.setAttribute('aria-label', isMinimized ? 'Expand player' : 'Minimize player');
     });
 
-    // Listen for play-episode events
+    // Listen for play-episode events (single global listener)
     window.addEventListener('play-episode', ((e: CustomEvent) => {
       const { title, audioUrl, episodeUrl } = e.detail;
       titleEl.textContent = title;
       titleEl.href = episodeUrl || '#';
       audio.src = audioUrl;
-      audio.play();
+      audio.play().catch((err: Error) => {
+        console.warn('Autoplay blocked, user must click play:', err.message);
+      });
       player.dataset.hidden = 'false';
 
       // Save state
@@ -190,7 +197,7 @@
       } catch {}
     }) as EventListener);
 
-    // Restore state
+    // Restore state (don't autoplay on restore — just show player)
     try {
       const saved = sessionStorage.getItem('inchunwa-player');
       if (saved) {
@@ -201,10 +208,7 @@
         player.dataset.hidden = 'false';
       }
     } catch {}
-  }
-
-  initAudioPlayer();
-  document.addEventListener('astro:after-swap', initAudioPlayer);
+  })();
 </script>
 
 <style>
