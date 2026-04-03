@@ -1,0 +1,222 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import SocialLinks from '../components/contact/SocialLinks.astro';
+import { getCollection, render } from 'astro:content';
+
+const pagesCollection = await getCollection('pages');
+const contactPage = pagesCollection.find(p => p.id === 'contact');
+const { Content } = contactPage ? await render(contactPage) : { Content: null };
+---
+
+<PageLayout title="Contact Us" description="Get in touch with the Inchunwa Project team.">
+
+  <section class="section page-header">
+    <div class="container">
+      <h1 class="page-header__title animate-on-scroll">Contact Us</h1>
+      <p class="page-header__subtitle animate-on-scroll">
+        We welcome questions, collaboration opportunities, and community connections.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="contact-grid">
+        {/* Info Column */}
+        <div class="contact-info">
+          {Content && (
+            <div class="prose animate-on-scroll">
+              <Content />
+            </div>
+          )}
+
+          <div class="contact-details animate-on-scroll">
+            <h3>Email</h3>
+            <p>
+              <a href="mailto:contact@inchunwa.org">contact@inchunwa.org</a>
+            </p>
+
+            <h3>Hours</h3>
+            <p>Monday – Friday, 10:00 AM – 4:30 PM CST</p>
+          </div>
+
+          <div class="animate-on-scroll">
+            <h3>Follow Us</h3>
+            <SocialLinks />
+          </div>
+        </div>
+
+        {/* Form Column */}
+        <div class="contact-form-wrap animate-on-scroll">
+          <div class="contact-form-card">
+            <h2>Send a Message</h2>
+            <p class="text-muted" style="margin-block-end: var(--space-lg);">
+              Use the form below to reach us directly, or connect through our embedded inquiry form.
+            </p>
+
+            {/* Lazy-loaded Google Form embed */}
+            <div class="google-form-container" id="google-form-container">
+              <noscript>
+                <p>Please enable JavaScript to load the contact form, or email us directly at <a href="mailto:contact@inchunwa.org">contact@inchunwa.org</a>.</p>
+              </noscript>
+              <div class="form-placeholder" id="form-placeholder">
+                <p>Loading contact form...</p>
+              </div>
+            </div>
+
+            {/* Fallback simple form */}
+            <details class="fallback-form">
+              <summary>Prefer a simple form?</summary>
+              <form
+                action="https://formsubmit.co/contact@inchunwa.org"
+                method="POST"
+                class="simple-form"
+              >
+                <div class="form-group">
+                  <label for="name">Name</label>
+                  <input type="text" id="name" name="name" required />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" required />
+                </div>
+                <div class="form-group">
+                  <label for="message">Message</label>
+                  <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn--primary btn--md">Send Message</button>
+              </form>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .page-header {
+    background: linear-gradient(135deg, var(--color-black) 0%, #2d0a07 100%);
+    color: var(--text-on-dark);
+    padding-block: var(--space-2xl);
+  }
+
+  .page-header__title {
+    color: var(--color-white);
+    margin-block-end: var(--space-sm);
+  }
+
+  .page-header__subtitle {
+    font-size: var(--text-lg);
+    color: rgba(253, 250, 250, 0.8);
+    max-width: 50ch;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .contact-details {
+    margin-block: var(--space-xl);
+  }
+
+  .contact-details h3 {
+    font-size: var(--text-base);
+    font-family: var(--font-body);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-dark-red);
+    margin-block-start: var(--space-md);
+    margin-block-end: var(--space-xs);
+  }
+
+  .contact-form-card {
+    padding: var(--space-xl);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+  }
+
+  .contact-form-card h2 {
+    font-size: var(--text-2xl);
+  }
+
+  .google-form-container {
+    min-height: 400px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .google-form-container iframe {
+    width: 100%;
+    min-height: 600px;
+    border: none;
+  }
+
+  .form-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    background: rgba(234, 168, 163, 0.08);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+  }
+
+  .fallback-form {
+    margin-block-start: var(--space-lg);
+    border-block-start: 1px solid var(--border-light);
+    padding-block-start: var(--space-md);
+  }
+
+  .fallback-form summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-dark-red);
+  }
+
+  .simple-form {
+    margin-block-start: var(--space-md);
+  }
+
+  .form-group {
+    margin-block-end: var(--space-md);
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: var(--text-sm);
+    margin-block-end: var(--space-xs);
+    color: var(--text-primary);
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: var(--space-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    font-size: var(--text-base);
+    transition: border-color var(--transition-fast);
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: var(--color-dark-red);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(154, 2, 1, 0.1);
+  }
+</style>

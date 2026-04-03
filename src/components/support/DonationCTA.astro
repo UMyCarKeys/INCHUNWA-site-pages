@@ -1,0 +1,60 @@
+---
+import Button from '../ui/Button.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  buttonText: string;
+  variant?: 'dark' | 'light';
+}
+
+const { title, description, href, buttonText, variant = 'light' } = Astro.props;
+---
+
+<div class:list={['donation-card', `donation-card--${variant}`, 'animate-on-scroll', 'hover-lift']}>
+  <h3 class="donation-card__title">{title}</h3>
+  <p class="donation-card__desc">{description}</p>
+  <Button href={href} variant={variant === 'dark' ? 'secondary' : 'primary'} target="_blank" rel="noopener noreferrer">
+    {buttonText}
+  </Button>
+</div>
+
+<style>
+  .donation-card {
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+  }
+
+  .donation-card--light {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+  }
+
+  .donation-card--dark {
+    background: var(--bg-dark);
+    color: var(--text-on-dark);
+  }
+
+  .donation-card__title {
+    font-size: var(--text-xl);
+    margin-block-end: var(--space-sm);
+  }
+
+  .donation-card--dark .donation-card__title {
+    color: var(--color-pink);
+  }
+
+  .donation-card__desc {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin-block-end: var(--space-lg);
+    max-width: 35ch;
+    margin-inline: auto;
+  }
+
+  .donation-card--dark .donation-card__desc {
+    color: rgba(253, 250, 250, 0.7);
+  }
+</style>

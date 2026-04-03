@@ -1,0 +1,185 @@
+---
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '' } = Astro.props;
+
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/episodes', label: 'Episodes' },
+  { href: '/contact', label: 'Contact' },
+  { href: '/support', label: 'Support Us' },
+];
+---
+
+<button
+  class="mobile-menu-toggle"
+  aria-label="Open menu"
+  aria-expanded="false"
+  aria-controls="mobile-menu"
+>
+  <span class="hamburger-line"></span>
+  <span class="hamburger-line"></span>
+  <span class="hamburger-line"></span>
+</button>
+
+<dialog id="mobile-menu" class="mobile-menu" aria-label="Mobile navigation">
+  <div class="mobile-menu__inner">
+    <button class="mobile-menu__close" aria-label="Close menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <nav aria-label="Mobile navigation">
+      <ul class="mobile-nav-list">
+        {links.map(link => (
+          <li>
+            <a
+              href={link.href}
+              class:list={['mobile-nav-link', { 'is-active': currentPath === link.href }]}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</dialog>
+
+<script>
+  function initMobileMenu() {
+    const toggle = document.querySelector('.mobile-menu-toggle') as HTMLButtonElement;
+    const dialog = document.getElementById('mobile-menu') as HTMLDialogElement;
+    const closeBtn = dialog?.querySelector('.mobile-menu__close') as HTMLButtonElement;
+
+    if (!toggle || !dialog) return;
+
+    toggle.addEventListener('click', () => {
+      dialog.showModal();
+      toggle.setAttribute('aria-expanded', 'true');
+    });
+
+    closeBtn?.addEventListener('click', () => {
+      dialog.close();
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) {
+        dialog.close();
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    dialog.addEventListener('close', () => {
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  initMobileMenu();
+  document.addEventListener('astro:after-swap', initMobileMenu);
+</script>
+
+<style>
+  .mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    padding: var(--space-xs);
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .mobile-menu-toggle {
+      display: flex;
+    }
+  }
+
+  .hamburger-line {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: var(--text-primary);
+    border-radius: 2px;
+    transition: transform var(--transition-fast);
+  }
+
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-mobile-menu);
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border: none;
+    padding: 0;
+    background: transparent;
+  }
+
+  .mobile-menu::backdrop {
+    background: rgba(31, 3, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .mobile-menu[open] .mobile-menu__inner {
+    animation: slide-in-right var(--transition-base) ease forwards;
+  }
+
+  .mobile-menu__inner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(320px, 85vw);
+    height: 100%;
+    background: var(--bg-primary);
+    padding: var(--space-lg);
+    overflow-y: auto;
+  }
+
+  .mobile-menu__close {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    padding: var(--space-xs);
+    color: var(--text-primary);
+  }
+
+  .mobile-nav-list {
+    margin-block-start: var(--space-2xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .mobile-nav-link {
+    display: block;
+    padding: var(--space-sm) var(--space-md);
+    color: var(--text-primary);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition-fast);
+  }
+
+  .mobile-nav-link:hover {
+    background-color: var(--bg-accent);
+    color: var(--text-primary);
+  }
+
+  .mobile-nav-link.is-active {
+    color: var(--color-dark-red);
+    font-weight: 700;
+    background-color: rgba(234, 168, 163, 0.2);
+  }
+
+  @keyframes slide-in-right {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+import AudioPlayer from '../components/global/AudioPlayer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: string;
+  noIndex?: boolean;
+}
+
+const { title, description, ogImage, ogType, noIndex } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<BaseLayout title={title} description={description} ogImage={ogImage} ogType={ogType} noIndex={noIndex}>
+  <Header currentPath={currentPath} />
+
+  <main id="main-content" transition:animate="fade">
+    <slot />
+  </main>
+
+  <Footer />
+
+  <AudioPlayer />
+
+  {/* Scroll animation observer */}
+  <script>
+    function initScrollAnimations() {
+      const elements = document.querySelectorAll('.animate-on-scroll');
+      if (!elements.length) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+      );
+
+      elements.forEach((el) => observer.observe(el));
+    }
+
+    initScrollAnimations();
+    document.addEventListener('astro:after-swap', initScrollAnimations);
+  </script>
+</BaseLayout>

@@ -1,0 +1,80 @@
+---
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '' } = Astro.props;
+
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/episodes', label: 'Episodes' },
+  { href: '/contact', label: 'Contact' },
+];
+---
+
+<nav aria-label="Main navigation">
+  <ul class="nav-list">
+    {links.map(link => (
+      <li>
+        <a
+          href={link.href}
+          class:list={['nav-link', { 'is-active': currentPath === link.href }]}
+        >
+          {link.label}
+        </a>
+      </li>
+    ))}
+    <li>
+      <a href="/support" class:list={['nav-link', 'nav-cta', { 'is-active': currentPath === '/support' }]}>
+        Support Us
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<style>
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .nav-link {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .nav-link:hover {
+    color: var(--color-dark-red);
+  }
+
+  .nav-link.is-active {
+    color: var(--color-dark-red);
+    font-weight: 700;
+  }
+
+  .nav-cta {
+    background-color: var(--cta-bg);
+    color: var(--cta-text);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+  }
+
+  .nav-cta:hover {
+    background-color: var(--cta-hover);
+    color: var(--cta-text);
+  }
+
+  .nav-cta.is-active {
+    color: var(--cta-text);
+  }
+</style>

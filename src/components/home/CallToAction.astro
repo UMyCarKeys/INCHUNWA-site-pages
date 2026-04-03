@@ -1,0 +1,72 @@
+---
+import Button from '../ui/Button.astro';
+---
+
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-grid">
+      <!-- Support CTA -->
+      <div class="cta-card cta-card--support animate-on-scroll">
+        <h3 class="cta-card__title">Support the Work</h3>
+        <p class="cta-card__text">
+          Your contribution directly supports podcast production, educational resources, and the ongoing work of cultural revitalization.
+        </p>
+        <Button href="/support" variant="primary">Support Us</Button>
+      </div>
+
+      <!-- Newsletter CTA -->
+      <div class="cta-card cta-card--newsletter animate-on-scroll">
+        <h3 class="cta-card__title">Stay Connected</h3>
+        <p class="cta-card__text">
+          Follow us on social media to stay updated on new episodes, community events, and educational resources.
+        </p>
+        <Button href="/contact" variant="outline">Get in Touch</Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: var(--space-lg);
+  }
+
+  .cta-card {
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+  }
+
+  .cta-card--support {
+    background: var(--bg-dark);
+    color: var(--text-on-dark);
+  }
+
+  .cta-card--support .cta-card__text {
+    color: rgba(253, 250, 250, 0.8);
+  }
+
+  .cta-card--newsletter {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+  }
+
+  .cta-card__title {
+    font-size: var(--text-2xl);
+    margin-block-end: var(--space-md);
+  }
+
+  .cta-card--support .cta-card__title {
+    color: var(--color-pink);
+  }
+
+  .cta-card__text {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    margin-block-end: var(--space-lg);
+    max-width: 40ch;
+    margin-inline: auto;
+  }
+</style>

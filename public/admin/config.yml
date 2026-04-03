@@ -1,0 +1,110 @@
+backend:
+  name: git-gateway
+  branch: main
+
+local_backend: true
+
+media_folder: "src/assets/images"
+public_folder: "/images"
+
+site_url: https://inchunwa.org
+
+collections:
+  # Episodes
+  - name: "episodes"
+    label: "Episodes"
+    folder: "src/content/episodes"
+    create: true
+    slug: "ep-{{fields.episodeNumber}}-{{slug}}"
+    sortable_fields: ["pubDate", "episodeNumber", "title"]
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Publish Date", name: "pubDate", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Series", name: "series", widget: "relation", collection: "series", search_fields: ["title"], value_field: "title", required: false }
+      - { label: "Season Number", name: "seasonNumber", widget: "number", required: false }
+      - { label: "Episode Number", name: "episodeNumber", widget: "number" }
+      - { label: "Episode Type", name: "episodeType", widget: "select", options: ["full", "trailer", "bonus"], default: "full" }
+      - { label: "Duration (HH:MM:SS)", name: "duration", widget: "string" }
+      - { label: "Audio URL", name: "audioUrl", widget: "string" }
+      - { label: "Audio File Size (bytes)", name: "audioLength", widget: "number", required: false }
+      - { label: "Cover Image", name: "coverImage", widget: "image", required: false }
+      - { label: "Cover Image Alt Text", name: "coverImageAlt", widget: "string", required: false }
+      - { label: "Has Transcript", name: "hasTranscript", widget: "boolean", default: false }
+      - { label: "Transcript", name: "transcript", widget: "text", required: false }
+      - { label: "Explicit Content", name: "explicit", widget: "boolean", default: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Tags", name: "tags", widget: "list", default: [] }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false }
+      - { label: "Show Notes", name: "body", widget: "markdown" }
+
+  # Series
+  - name: "series"
+    label: "Series"
+    folder: "src/content/series"
+    create: true
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Cover Image", name: "coverImage", widget: "image", required: false }
+      - { label: "Cover Image Alt Text", name: "coverImageAlt", widget: "string", required: false }
+      - { label: "Display Order", name: "order", widget: "number", default: 0 }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  # Staff
+  - name: "staff"
+    label: "Staff"
+    folder: "src/content/staff"
+    create: true
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - { label: "Role", name: "role", widget: "string" }
+      - { label: "Bio", name: "bio", widget: "text" }
+      - { label: "Photo", name: "photo", widget: "image", required: false }
+      - { label: "Photo Alt Text", name: "photoAlt", widget: "string", required: false }
+      - { label: "Email", name: "email", widget: "string", required: false }
+      - label: "Social Links"
+        name: "socialLinks"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Platform", name: "platform", widget: "string" }
+          - { label: "URL", name: "url", widget: "string" }
+      - { label: "Display Order", name: "order", widget: "number", default: 0 }
+
+  # Testimonials
+  - name: "testimonials"
+    label: "Testimonials"
+    folder: "src/content/testimonials"
+    create: true
+    fields:
+      - { label: "Author", name: "author", widget: "string" }
+      - { label: "Role/Title", name: "role", widget: "string", required: false }
+      - { label: "Quote", name: "quote", widget: "text" }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Display Order", name: "order", widget: "number", default: 0 }
+
+  # Funders
+  - name: "funders"
+    label: "Funders"
+    folder: "src/content/funders"
+    create: true
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - { label: "Logo", name: "logo", widget: "image", required: false }
+      - { label: "Logo Alt Text", name: "logoAlt", widget: "string", required: false }
+      - { label: "Website URL", name: "url", widget: "string", required: false }
+      - { label: "Currently Active", name: "active", widget: "boolean", default: true }
+      - { label: "Display Order", name: "order", widget: "number", default: 0 }
+
+  # Pages (fixed — no create/delete)
+  - name: "pages"
+    label: "Pages"
+    folder: "src/content/pages"
+    create: false
+    delete: false
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "string", required: false }
+      - { label: "Last Updated", name: "updatedDate", widget: "datetime", required: false }
+      - { label: "Content", name: "body", widget: "markdown" }

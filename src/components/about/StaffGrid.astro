@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import StaffCard from './StaffCard.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+
+const staffMembers = await getCollection('staff');
+const sorted = staffMembers.sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="section">
+  <div class="container">
+    <SectionHeading
+      title="Our Team"
+      subtitle="The community members leading the Inchunwa Project."
+      align="center"
+    />
+    <div class="staff-grid stagger-children">
+      {sorted.map((member) => (
+        <StaffCard
+          name={member.data.name}
+          role={member.data.role}
+          bio={member.data.bio}
+          photo={member.data.photo}
+          photoAlt={member.data.photoAlt}
+          email={member.data.email}
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .staff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--space-lg);
+  }
+</style>

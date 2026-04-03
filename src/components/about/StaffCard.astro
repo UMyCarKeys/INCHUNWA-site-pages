@@ -1,0 +1,94 @@
+---
+interface Props {
+  name: string;
+  role: string;
+  bio: string;
+  photo?: string;
+  photoAlt?: string;
+  email?: string;
+}
+
+const { name, role, bio, photo, photoAlt, email } = Astro.props;
+---
+
+<div class="staff-card animate-on-scroll hover-lift">
+  <div class="staff-card__photo-wrap">
+    {photo ? (
+      <img src={photo} alt={photoAlt || `${name} portrait`} class="staff-card__photo" loading="lazy" />
+    ) : (
+      <div class="staff-card__photo-placeholder" aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M20 21a8 8 0 0 0-16 0" />
+        </svg>
+      </div>
+    )}
+  </div>
+  <h3 class="staff-card__name">{name}</h3>
+  <p class="staff-card__role">{role}</p>
+  <p class="staff-card__bio">{bio}</p>
+  {email && (
+    <a href={`mailto:${email}`} class="staff-card__email">{email}</a>
+  )}
+</div>
+
+<style>
+  .staff-card {
+    text-align: center;
+    padding: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+  }
+
+  .staff-card__photo-wrap {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto var(--space-md);
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--color-pink);
+  }
+
+  .staff-card__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .staff-card__photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-accent);
+    color: var(--color-dark-red);
+  }
+
+  .staff-card__name {
+    font-size: var(--text-lg);
+    font-family: var(--font-display);
+    margin-block-end: 0.2em;
+  }
+
+  .staff-card__role {
+    font-size: var(--text-sm);
+    color: var(--color-dark-red);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-block-end: var(--space-sm);
+  }
+
+  .staff-card__bio {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin-block-end: var(--space-sm);
+  }
+
+  .staff-card__email {
+    font-size: var(--text-sm);
+    color: var(--link-color);
+  }
+</style>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://inchunwa.org/sitemap-index.xml

@@ -1,0 +1,80 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import EpisodeCard from '../../components/episodes/EpisodeCard.astro';
+import SeriesNav from '../../components/episodes/SeriesNav.astro';
+import { getCollection } from 'astro:content';
+
+const episodes = await getCollection('episodes', ({ data }) => !data.draft);
+const sorted = episodes.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+
+<PageLayout title="Episodes" description="Browse the full archive of Inchunwa Project podcast episodes.">
+
+  <section class="section page-header">
+    <div class="container">
+      <h1 class="page-header__title animate-on-scroll">Episodes</h1>
+      <p class="page-header__subtitle animate-on-scroll">
+        Explore conversations about Southeastern Indigenous tattooing traditions, body sovereignty, and cultural revitalization.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SeriesNav />
+
+      <div class="episodes-list stagger-children">
+        {sorted.map((episode) => (
+          <EpisodeCard
+            id={episode.id}
+            title={episode.data.title}
+            description={episode.data.description}
+            pubDate={episode.data.pubDate}
+            duration={episode.data.duration}
+            series={episode.data.series}
+            episodeNumber={episode.data.episodeNumber}
+            audioUrl={episode.data.audioUrl}
+          />
+        ))}
+      </div>
+
+      {sorted.length === 0 && (
+        <div class="empty-state text-center">
+          <p>New episodes coming soon. Stay tuned!</p>
+        </div>
+      )}
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .page-header {
+    background: linear-gradient(135deg, var(--color-black) 0%, #2d0a07 100%);
+    color: var(--text-on-dark);
+    padding-block: var(--space-2xl);
+  }
+
+  .page-header__title {
+    color: var(--color-white);
+    margin-block-end: var(--space-sm);
+  }
+
+  .page-header__subtitle {
+    font-size: var(--text-lg);
+    color: rgba(253, 250, 250, 0.8);
+    max-width: 55ch;
+  }
+
+  .episodes-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr));
+    gap: var(--space-lg);
+  }
+
+  .empty-state {
+    padding: var(--space-2xl);
+    color: var(--text-muted);
+    font-size: var(--text-lg);
+  }
+</style>

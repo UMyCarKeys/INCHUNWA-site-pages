@@ -1,0 +1,47 @@
+---
+interface Props {
+  href?: string;
+  class?: string;
+  padding?: 'sm' | 'md' | 'lg';
+}
+
+const { href, class: className = '', padding = 'md' } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag
+  href={href}
+  class:list={['card', `card--pad-${padding}`, { 'card--link': !!href }, className]}
+>
+  <slot />
+</Tag>
+
+<style>
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .card--pad-sm { padding: var(--space-sm); }
+  .card--pad-md { padding: var(--space-md); }
+  .card--pad-lg { padding: var(--space-lg); }
+
+  .card--link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .card--link:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: inherit;
+  }
+
+  .card--link:active {
+    transform: translateY(0);
+  }
+</style>

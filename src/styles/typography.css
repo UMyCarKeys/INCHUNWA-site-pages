@@ -1,0 +1,105 @@
+/* ==========================================================================
+   Typography — Font Face Declarations
+   Using Google Fonts CDN for now; replace with self-hosted WOFF2 for production.
+   Display: Bitter (serif) — warm, grounded, editorial
+   Body: Source Sans 3 (sans-serif) — clean, readable, welcoming
+   ========================================================================== */
+
+/*
+  Note: We'll import from Google Fonts during development.
+  For production, download WOFF2 files to public/fonts/ and use @font-face.
+
+  Self-hosted @font-face declarations (uncomment when fonts are downloaded):
+
+  @font-face {
+    font-family: 'Bitter';
+    src: url('/fonts/Bitter-Variable.woff2') format('woff2');
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: optional;
+  }
+
+  @font-face {
+    font-family: 'Source Sans 3';
+    src: url('/fonts/SourceSans3-Variable.woff2') format('woff2');
+    font-weight: 300 700;
+    font-style: normal;
+    font-display: swap;
+  }
+*/
+
+:root {
+  --font-display: 'Bitter', Georgia, 'Times New Roman', serif;
+  --font-body: 'Source Sans 3', 'Source Sans Pro', system-ui, -apple-system, sans-serif;
+}
+
+/* Prose styles for long-form content */
+.prose {
+  font-size: var(--text-base);
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.prose h2 {
+  font-size: var(--text-2xl);
+  margin-block: var(--space-xl) var(--space-md);
+  color: var(--text-primary);
+}
+
+.prose h3 {
+  font-size: var(--text-xl);
+  margin-block: var(--space-lg) var(--space-sm);
+  color: var(--text-primary);
+}
+
+.prose p {
+  margin-block-end: var(--space-md);
+}
+
+.prose ul,
+.prose ol {
+  margin-block-end: var(--space-md);
+  padding-inline-start: var(--space-lg);
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose li {
+  margin-block-end: var(--space-xs);
+}
+
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-pink);
+  transition: text-decoration-color var(--transition-fast);
+}
+
+.prose a:hover {
+  text-decoration-color: var(--color-dark-red);
+}
+
+.prose blockquote {
+  border-inline-start: 4px solid var(--color-pink);
+  padding-inline-start: var(--space-md);
+  font-style: italic;
+  color: var(--text-muted);
+  margin-block: var(--space-md);
+}
+
+.prose img {
+  border-radius: var(--radius-md);
+  margin-block: var(--space-md);
+}
+
+.prose hr {
+  border: none;
+  border-block-start: 2px solid var(--border-light);
+  margin-block: var(--space-xl);
+}

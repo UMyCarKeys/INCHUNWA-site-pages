@@ -1,0 +1,53 @@
+---
+interface Props {
+  quote: string;
+  author: string;
+  role?: string;
+}
+
+const { quote, author, role } = Astro.props;
+---
+
+<blockquote class="testimonial-card animate-on-scroll">
+  <p class="testimonial-card__quote">&ldquo;{quote}&rdquo;</p>
+  <footer class="testimonial-card__footer">
+    <cite class="testimonial-card__author">{author}</cite>
+    {role && <span class="testimonial-card__role">{role}</span>}
+  </footer>
+</blockquote>
+
+<style>
+  .testimonial-card {
+    padding: var(--space-lg);
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border-inline-start: 4px solid var(--color-pink);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .testimonial-card__quote {
+    font-size: var(--text-lg);
+    font-style: italic;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-block-end: var(--space-md);
+  }
+
+  .testimonial-card__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1em;
+  }
+
+  .testimonial-card__author {
+    font-style: normal;
+    font-weight: 600;
+    font-size: var(--text-base);
+    color: var(--text-primary);
+  }
+
+  .testimonial-card__role {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+</style>

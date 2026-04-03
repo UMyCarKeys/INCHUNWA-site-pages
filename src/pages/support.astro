@@ -1,0 +1,204 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import DonationCTA from '../components/support/DonationCTA.astro';
+import MotifDivider from '../components/ui/MotifDivider.astro';
+import { getCollection, render } from 'astro:content';
+
+const pagesCollection = await getCollection('pages');
+const supportPage = pagesCollection.find(p => p.id === 'support');
+const { Content } = supportPage ? await render(supportPage) : { Content: null };
+
+const funders = await getCollection('funders');
+const activeFunders = funders.filter(f => f.data.active).sort((a, b) => a.data.order - b.data.order);
+---
+
+<PageLayout title="Support Us" description="Support the Inchunwa Project through donations, merchandise, and community partnership.">
+
+  <section class="section page-header">
+    <div class="container">
+      <h1 class="page-header__title animate-on-scroll">Support Us</h1>
+      <p class="page-header__subtitle animate-on-scroll">
+        Your contribution directly supports the work of cultural revitalization.
+      </p>
+    </div>
+  </section>
+
+  {/* Intro Content */}
+  <section class="section">
+    <div class="container container--narrow text-center">
+      {Content && (
+        <div class="prose animate-on-scroll" style="margin-inline: auto;">
+          <Content />
+        </div>
+      )}
+    </div>
+  </section>
+
+  {/* Donation Options */}
+  <section class="section" style="padding-block-start: 0;">
+    <div class="container">
+      <div class="donation-grid stagger-children">
+        <DonationCTA
+          title="GiveButter"
+          description="Make a one-time or recurring donation to support podcast production, education, and community events."
+          href="#"
+          buttonText="Donate Now"
+          variant="dark"
+        />
+        <DonationCTA
+          title="Patreon"
+          description="Become a patron for exclusive content, early access to episodes, and behind-the-scenes updates."
+          href="#"
+          buttonText="Become a Patron"
+          variant="light"
+        />
+        <DonationCTA
+          title="Merch & Shop"
+          description="Support the project by purchasing merchandise that celebrates Southeastern Indigenous culture."
+          href="#"
+          buttonText="Shop Now"
+          variant="light"
+        />
+      </div>
+    </div>
+  </section>
+
+  <MotifDivider />
+
+  {/* Other Ways to Support */}
+  <section class="section">
+    <div class="container container--narrow text-center">
+      <SectionHeading
+        title="Other Ways to Support"
+        subtitle="Financial contributions aren't the only way to help."
+        align="center"
+      />
+      <div class="support-list animate-on-scroll">
+        <div class="support-item">
+          <h3>Share & Listen</h3>
+          <p>Subscribe to the podcast on your favorite platform and share episodes with your community.</p>
+        </div>
+        <div class="support-item">
+          <h3>Collaborate</h3>
+          <p>If you're a researcher, educator, or practitioner, reach out about collaboration opportunities.</p>
+        </div>
+        <div class="support-item">
+          <h3>Spread the Word</h3>
+          <p>Follow us on social media and help us reach more people who care about this work.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Past Funders */}
+  {activeFunders.length > 0 && (
+    <section class="section section--accent">
+      <div class="container text-center">
+        <SectionHeading
+          title="Thank You to Our Supporters"
+          subtitle="We are grateful for the organizations and individuals who have supported our work."
+          align="center"
+        />
+        <div class="funders-grid stagger-children">
+          {activeFunders.map((funder) => (
+            <div class="funder-item animate-on-scroll">
+              {funder.data.url ? (
+                <a href={funder.data.url} target="_blank" rel="noopener noreferrer" class="funder-link">
+                  {funder.data.logo ? (
+                    <img src={funder.data.logo} alt={funder.data.logoAlt || funder.data.name} loading="lazy" class="funder-logo" />
+                  ) : (
+                    <span class="funder-name">{funder.data.name}</span>
+                  )}
+                </a>
+              ) : (
+                <span class="funder-name">{funder.data.name}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</PageLayout>
+
+<style>
+  .page-header {
+    background: linear-gradient(135deg, var(--color-black) 0%, #2d0a07 100%);
+    color: var(--text-on-dark);
+    padding-block: var(--space-2xl);
+  }
+
+  .page-header__title {
+    color: var(--color-white);
+    margin-block-end: var(--space-sm);
+  }
+
+  .page-header__subtitle {
+    font-size: var(--text-lg);
+    color: rgba(253, 250, 250, 0.8);
+    max-width: 50ch;
+  }
+
+  .donation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--space-lg);
+  }
+
+  .support-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: var(--space-lg);
+    text-align: start;
+    margin-block-start: var(--space-lg);
+  }
+
+  .support-item h3 {
+    font-size: var(--text-lg);
+    margin-block-end: var(--space-xs);
+    color: var(--color-dark-red);
+  }
+
+  .support-item p {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .funders-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-xl);
+    margin-block-start: var(--space-lg);
+  }
+
+  .funder-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .funder-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: opacity var(--transition-fast);
+  }
+
+  .funder-link:hover {
+    opacity: 0.7;
+  }
+
+  .funder-logo {
+    max-height: 60px;
+    max-width: 150px;
+    object-fit: contain;
+  }
+
+  .funder-name {
+    font-weight: 600;
+    font-size: var(--text-lg);
+  }
+</style>

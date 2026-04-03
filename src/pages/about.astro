@@ -1,0 +1,93 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import MotifDivider from '../components/ui/MotifDivider.astro';
+import StaffGrid from '../components/about/StaffGrid.astro';
+import TestimonialCard from '../components/about/TestimonialCard.astro';
+import { getCollection, render } from 'astro:content';
+
+const aboutPage = await getCollection('pages');
+const about = aboutPage.find(p => p.id === 'about');
+const { Content } = about ? await render(about) : { Content: null };
+
+const testimonials = await getCollection('testimonials');
+const featured = testimonials
+  .filter(t => t.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<PageLayout title="About" description="Learn about the Inchunwa Project's mission, vision, history, and the community members leading this work.">
+
+  {/* Page Header */}
+  <section class="section page-header">
+    <div class="container container--narrow">
+      <h1 class="page-header__title animate-on-scroll">About the Inchunwa Project</h1>
+      <p class="page-header__subtitle animate-on-scroll">
+        Founded by tribal community members to revitalize a cultural practice that has been asleep for over 100 years.
+      </p>
+    </div>
+  </section>
+
+  {/* Mission & Vision Content */}
+  <section class="section">
+    <div class="container container--narrow">
+      <div class="prose animate-on-scroll">
+        {Content && <Content />}
+      </div>
+    </div>
+  </section>
+
+  <MotifDivider />
+
+  {/* Staff */}
+  <StaffGrid />
+
+  {/* Testimonials */}
+  {featured.length > 0 && (
+    <section class="section section--accent">
+      <div class="container container--narrow">
+        <SectionHeading
+          title="Community Voices"
+          subtitle="Words from those who have been part of this journey."
+          align="center"
+        />
+        <div class="testimonials-list stagger-children">
+          {featured.map((t) => (
+            <TestimonialCard
+              quote={t.data.quote}
+              author={t.data.author}
+              role={t.data.role}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</PageLayout>
+
+<style>
+  .page-header {
+    background: linear-gradient(135deg, var(--color-black) 0%, #2d0a07 100%);
+    color: var(--text-on-dark);
+    text-align: center;
+    padding-block: var(--space-2xl);
+  }
+
+  .page-header__title {
+    color: var(--color-white);
+    margin-block-end: var(--space-md);
+  }
+
+  .page-header__subtitle {
+    font-size: var(--text-lg);
+    color: rgba(253, 250, 250, 0.8);
+    max-width: 50ch;
+    margin-inline: auto;
+  }
+
+  .testimonials-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+</style>

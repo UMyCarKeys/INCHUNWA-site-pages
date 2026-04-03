@@ -1,0 +1,40 @@
+---
+import MotifDivider from '../ui/MotifDivider.astro';
+import Button from '../ui/Button.astro';
+---
+
+<section class="section section--accent mission-teaser">
+  <div class="container container--narrow text-center">
+    <MotifDivider />
+    <h2 class="mission-teaser__title animate-on-scroll">Community-Rooted. Culturally Grounded.</h2>
+    <p class="mission-teaser__text animate-on-scroll">
+      The Inchunwa Project is building a model where community members are not only recipients of ancestral markings, but active participants in sustaining the cultural, relational, and ceremonial foundations of the practice.
+    </p>
+    <p class="mission-teaser__text animate-on-scroll">
+      Community involvement is not peripheral — it is intrinsic to the work of reclaiming ancestral marks.
+    </p>
+    <div class="animate-on-scroll">
+      <Button href="/about" variant="primary">About Our Mission</Button>
+    </div>
+    <MotifDivider />
+  </div>
+</section>
+
+<style>
+  .mission-teaser__title {
+    margin-block-end: var(--space-lg);
+  }
+
+  .mission-teaser__text {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    margin-inline: auto;
+    margin-block-end: var(--space-md);
+  }
+
+  .mission-teaser__text:last-of-type {
+    margin-block-end: var(--space-xl);
+    font-style: italic;
+    font-weight: 500;
+  }
+</style>

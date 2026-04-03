@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+
+const seriesCollection = await getCollection('series');
+const sorted = seriesCollection.sort((a, b) => a.data.order - b.data.order);
+---
+
+<nav class="series-nav" aria-label="Filter by series">
+  <button class="series-pill is-active" data-filter="all">All Episodes</button>
+  {sorted.map((s) => (
+    <button class="series-pill" data-filter={s.data.title}>
+      {s.data.title}
+    </button>
+  ))}
+</nav>
+
+<script>
+  function initSeriesFilter() {
+    const pills = document.querySelectorAll('.series-pill');
+    const cards = document.querySelectorAll('[data-series]');
+
+    pills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        const filter = (pill as HTMLElement).dataset.filter;
+
+        pills.forEach(p => p.classList.remove('is-active'));
+        pill.classList.add('is-active');
+
+        cards.forEach((card) => {
+          const el = card as HTMLElement;
+          if (filter === 'all' || el.dataset.series === filter) {
+            el.style.display = '';
+          } else {
+            el.style.display = 'none';
+          }
+        });
+      });
+    });
+  }
+
+  initSeriesFilter();
+  document.addEventListener('astro:after-swap', initSeriesFilter);
+</script>
+
+<style>
+  .series-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-block-end: var(--space-xl);
+  }
+
+  .series-pill {
+    padding: 0.4em 1em;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .series-pill:hover {
+    border-color: var(--color-dark-red);
+    color: var(--color-dark-red);
+  }
+
+  .series-pill.is-active {
+    background: var(--color-dark-red);
+    color: var(--color-white);
+    border-color: var(--color-dark-red);
+  }
+</style>

@@ -1,0 +1,73 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import SkipLink from '../components/global/SkipLink.astro';
+import '../styles/global.css';
+import '../styles/typography.css';
+import '../styles/animations.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: string;
+  noIndex?: boolean;
+}
+
+const {
+  title,
+  description = 'Inchunwa is a community-rooted Southeastern Tribal tattoo project and podcast promoting body sovereignty through Indigenous Mississippian identity and cultural tattooing practices.',
+  ogImage = '/og-default.jpg',
+  ogType = 'website',
+  noIndex = false,
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const fullTitle = title === 'Home' ? 'Inchunwa Project' : `${title} | Inchunwa Project`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  {/* Fonts — Google Fonts for dev, replace with self-hosted for production */}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  {/* SEO */}
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalUrl} />
+  {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+  {/* Open Graph */}
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content={ogType} />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+  <meta property="og:site_name" content="Inchunwa Project" />
+
+  {/* Twitter Card */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
+
+  {/* RSS Autodiscovery */}
+  <link rel="alternate" type="application/rss+xml" title="Inchunwa Project Podcast" href="/rss.xml" />
+
+  {/* View Transitions */}
+  <ClientRouter />
+
+  <slot name="head" />
+</head>
+<body>
+  <SkipLink />
+  <slot />
+</body>
+</html>
