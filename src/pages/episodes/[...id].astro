@@ -60,17 +60,15 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
     <section class="episode-player">
       <div class="container container--narrow">
         {buzzsproutId ? (
-          <iframe
-            src={`https://www.buzzsprout.com/1810796/${buzzsproutId}?client_source=small_player&iframe=true`}
-            loading="lazy"
-            width="100%"
-            height="200"
-            frameborder="0"
-            scrolling="no"
-            sandbox="allow-scripts allow-same-origin allow-popups"
-            title={`Play: ${title}`}
-            class="episode-embed-player"
-          ></iframe>
+          <div id={`buzzsprout-player-${buzzsproutId}`} class="episode-embed-player"></div>
+          <script define:vars={{ buzzsproutId }}>
+            (function () {
+              const s = document.createElement('script');
+              s.src = 'https://www.buzzsprout.com/1810796/' + buzzsproutId + '.js?container_id=buzzsprout-player-' + buzzsproutId + '&player=small';
+              s.charset = 'utf-8';
+              document.body.appendChild(s);
+            })();
+          </script>
         ) : (
           <p>Audio unavailable.</p>
         )}
@@ -209,9 +207,14 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
   }
 
   .episode-embed-player {
-    display: block;
     border-radius: var(--radius-md);
     overflow: hidden;
+  }
+
+  .episode-embed-player iframe {
+    display: block;
+    width: 100%;
+    border: none;
   }
 
   .episode-body {

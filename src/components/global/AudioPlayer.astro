@@ -42,17 +42,19 @@
     function loadEpisode(episodeId: string, title: string, episodeUrl: string) {
       titleEl.textContent = title;
       titleEl.href = episodeUrl || '#';
-      // Replace iframe to trigger fresh load (and Buzzsprout's own autoplay on interaction)
-      embedEl.innerHTML = `<iframe
-        src="https://www.buzzsprout.com/1810796/${episodeId}?client_source=small_player&iframe=true"
-        loading="lazy"
-        width="100%"
-        height="200"
-        frameborder="0"
-        scrolling="no"
-        sandbox="allow-scripts allow-same-origin allow-popups"
-        title="${title.replace(/"/g, '&quot;')}"
-      ></iframe>`;
+
+      // Clear previous embed and any Buzzsprout script tags we injected
+      embedEl.innerHTML = `<div id="buzzsprout-player-${episodeId}"></div>`;
+      document.querySelectorAll('script[data-bz-ep]').forEach(s => s.remove());
+
+      // Use Buzzsprout's official JS embed — it creates its own iframe internally
+      // with the correct auth/CDN context so audio.buzzsprout.com isn't blocked
+      const script = document.createElement('script');
+      script.src = `https://www.buzzsprout.com/1810796/${episodeId}.js?container_id=buzzsprout-player-${episodeId}&player=small`;
+      script.setAttribute('data-bz-ep', episodeId);
+      script.charset = 'utf-8';
+      document.body.appendChild(script);
+
       player.dataset.hidden = 'false';
       if (isMinimized) {
         isMinimized = false;
@@ -72,6 +74,7 @@
     closeBtn.addEventListener('click', () => {
       player.dataset.hidden = 'true';
       embedEl.innerHTML = '';
+      document.querySelectorAll('script[data-bz-ep]').forEach(s => s.remove());
       sessionStorage.removeItem('inchunwa-player');
     });
 
