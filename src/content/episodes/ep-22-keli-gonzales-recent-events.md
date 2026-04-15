@@ -7,7 +7,7 @@ seasonNumber: 4
 episodeNumber: 22
 episodeType: "full"
 duration: "00:46:35"
-audioUrl: "https://www.buzzsprout.com/1810796/episodes/15960517-ep22-s04-keli-gonzales-and-recent-events.mp3"
+audioUrl: "https://www.buzzsprout.com/1810796/episodes/15960517.mp3"
 audioLength: 33583502
 explicit: false
 featured: false

@@ -7,7 +7,7 @@ seasonNumber: 3
 episodeNumber: 16
 episodeType: "full"
 duration: "01:15:36"
-audioUrl: "https://www.buzzsprout.com/1810796/episodes/13140664-ep16-s03-indigenous-futurisms-festival-nw-panel-discussion.mp3"
+audioUrl: "https://www.buzzsprout.com/1810796/episodes/13140664.mp3"
 audioLength: 54487351
 explicit: true
 featured: false

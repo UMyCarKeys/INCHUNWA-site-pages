@@ -7,7 +7,7 @@ seasonNumber: 4
 episodeNumber: 23
 episodeType: "full"
 duration: "01:30:30"
-audioUrl: "https://www.buzzsprout.com/1810796/episodes/17528424-ep-23-s-4-faithlyn-seawright-pt-1.mp3"
+audioUrl: "https://www.buzzsprout.com/1810796/episodes/17528424.mp3"
 audioLength: 65215135
 explicit: true
 featured: true

@@ -7,7 +7,7 @@ seasonNumber: 4
 episodeNumber: 21
 episodeType: "full"
 duration: "01:03:41"
-audioUrl: "https://www.buzzsprout.com/1810796/episodes/15132981-ep21-s04-indigipopx.mp3"
+audioUrl: "https://www.buzzsprout.com/1810796/episodes/15132981.mp3"
 audioLength: 45896177
 explicit: false
 featured: false

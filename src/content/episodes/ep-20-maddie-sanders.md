@@ -7,7 +7,7 @@ seasonNumber: 3
 episodeNumber: 20
 episodeType: "full"
 duration: "01:18:23"
-audioUrl: "https://www.buzzsprout.com/1810796/episodes/14964069-ep-20-s03-maddie-sanders.mp3"
+audioUrl: "https://www.buzzsprout.com/1810796/episodes/14964069.mp3"
 audioLength: 56494497
 explicit: true
 featured: false

@@ -7,7 +7,7 @@ seasonNumber: 2
 episodeNumber: 12
 episodeType: "full"
 duration: "01:35:53"
-audioUrl: "https://www.buzzsprout.com/1810796/episodes/11846679-ep12-s02-olivia-morgan-pt-2.mp3"
+audioUrl: "https://www.buzzsprout.com/1810796/episodes/11846679.mp3"
 audioLength: 69094971
 explicit: true
 featured: false

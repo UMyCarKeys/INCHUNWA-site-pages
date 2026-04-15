@@ -16,6 +16,7 @@ export async function getStaticPaths() {
 const { episode } = Astro.props;
 const { Content } = await render(episode);
 const { title, description, pubDate, series, episodeNumber, duration, audioUrl, hasTranscript, transcript, tags } = episode.data;
+const buzzsproutId = audioUrl.match(/\/(\d+)\.mp3/)?.[1];
 
 // Get prev/next episodes
 const allEpisodes = await getCollection('episodes', ({ data }) => !data.draft);
@@ -58,23 +59,21 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
     {/* Audio Player */}
     <section class="episode-player">
       <div class="container container--narrow">
-        <div class="inline-player">
-          <button
-            class="inline-player__play"
-            aria-label={`Play ${title}`}
-            data-audio-url={audioUrl}
-            data-episode-title={title}
-            data-episode-url={url(`/episodes/${episode.id}`)}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <polygon points="5,3 19,12 5,21" />
-            </svg>
-          </button>
-          <audio controls preload="metadata" class="inline-player__audio">
-            <source src={audioUrl} type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
-        </div>
+        {buzzsproutId ? (
+          <iframe
+            src={`https://www.buzzsprout.com/1810796/${buzzsproutId}?client_source=small_player&iframe=true`}
+            loading="lazy"
+            width="100%"
+            height="200"
+            frameborder="0"
+            scrolling="no"
+            sandbox="allow-scripts allow-same-origin allow-popups"
+            title={`Play: ${title}`}
+            class="episode-embed-player"
+          ></iframe>
+        ) : (
+          <p>Audio unavailable.</p>
+        )}
       </div>
     </section>
 
@@ -145,25 +144,6 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
   </article>
 </EpisodeLayout>
 
-<script>
-  function initInlinePlayer() {
-    document.querySelectorAll('.inline-player__play').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const button = btn as HTMLElement;
-        window.dispatchEvent(new CustomEvent('play-episode', {
-          detail: {
-            title: button.dataset.episodeTitle,
-            audioUrl: button.dataset.audioUrl,
-            episodeUrl: button.dataset.episodeUrl,
-          }
-        }));
-      });
-    });
-  }
-
-  initInlinePlayer();
-  document.addEventListener('astro:after-swap', initInlinePlayer);
-</script>
 
 <style>
   .episode-header {
@@ -228,34 +208,10 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
     border-block-end: 1px solid var(--border-light);
   }
 
-  .inline-player {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-  }
-
-  .inline-player__play {
-    flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--cta-bg);
-    color: var(--cta-text);
-    border-radius: 50%;
-    padding-inline-start: 3px;
-    transition: all var(--transition-fast);
-  }
-
-  .inline-player__play:hover {
-    background: var(--cta-hover);
-    transform: scale(1.05);
-  }
-
-  .inline-player__audio {
-    flex: 1;
-    height: 40px;
+  .episode-embed-player {
+    display: block;
+    border-radius: var(--radius-md);
+    overflow: hidden;
   }
 
   .episode-body {

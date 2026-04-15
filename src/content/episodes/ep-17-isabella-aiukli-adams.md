@@ -7,7 +7,7 @@ seasonNumber: 3
 episodeNumber: 17
 episodeType: "full"
 duration: "01:06:44"
-audioUrl: "https://www.buzzsprout.com/1810796/episodes/13303795-ep17-s03-isabella-aiukli-adams.mp3"
+audioUrl: "https://www.buzzsprout.com/1810796/episodes/13303795.mp3"
 audioLength: 48111981
 explicit: true
 featured: false

@@ -7,7 +7,7 @@ seasonNumber: 4
 episodeNumber: 25
 episodeType: "full"
 duration: "01:38:52"
-audioUrl: "https://www.buzzsprout.com/1810796/episodes/17755788-ep-25-e-4-revisiting-dr-michelle-johnson-jennings.mp3"
+audioUrl: "https://www.buzzsprout.com/1810796/episodes/17755788.mp3"
 audioLength: 71250703
 explicit: true
 featured: true

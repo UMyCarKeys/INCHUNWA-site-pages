@@ -7,7 +7,7 @@ seasonNumber: 2
 episodeNumber: 10
 episodeType: "full"
 duration: "01:22:23"
-audioUrl: "https://www.buzzsprout.com/1810796/episodes/11052982-ep10-s02-lauren-white.mp3"
+audioUrl: "https://www.buzzsprout.com/1810796/episodes/11052982.mp3"
 audioLength: 59366887
 explicit: false
 featured: false

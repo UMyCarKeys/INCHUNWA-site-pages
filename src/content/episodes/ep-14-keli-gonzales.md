@@ -7,7 +7,7 @@ seasonNumber: 3
 episodeNumber: 14
 episodeType: "full"
 duration: "00:48:15"
-audioUrl: "https://www.buzzsprout.com/1810796/episodes/12321144-ep14-s03-keli-gonzales.mp3"
+audioUrl: "https://www.buzzsprout.com/1810796/episodes/12321144.mp3"
 audioLength: 34794552
 explicit: true
 featured: false
