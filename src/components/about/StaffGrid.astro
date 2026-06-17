@@ -18,6 +18,8 @@ const sorted = staffMembers.sort((a, b) => a.data.order - b.data.order);
       {sorted.map((member) => (
         <StaffCard
           name={member.data.name}
+          nation={member.data.nation}
+          label={member.data.label}
           role={member.data.role}
           bio={member.data.bio}
           photo={member.data.photo}

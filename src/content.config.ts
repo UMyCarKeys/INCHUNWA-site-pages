@@ -40,6 +40,8 @@ const staff = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/staff' }),
   schema: z.object({
     name: z.string(),
+    nation: z.string().optional(),
+    label: z.string().optional(),
     role: z.string(),
     bio: z.string(),
     photo: z.string().optional(),
