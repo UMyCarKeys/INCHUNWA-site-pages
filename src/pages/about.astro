@@ -3,6 +3,7 @@ import PageLayout from '../layouts/PageLayout.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import MotifDivider from '../components/ui/MotifDivider.astro';
 import StaffGrid from '../components/about/StaffGrid.astro';
+import { url } from '../utils/paths';
 import TestimonialCard from '../components/about/TestimonialCard.astro';
 import { getCollection, render } from 'astro:content';
 
@@ -19,14 +20,27 @@ const featured = testimonials
 <PageLayout title="About" description="Learn about the Inchunwa Project's mission, vision, history, and the community members leading this work.">
 
   {/* Page Header */}
+  <MotifDivider variant="maze" />
   <section class="section page-header">
     <div class="container container--narrow">
+      <div class="page-header__logo-wrap animate-on-scroll">
+        <img
+          src={url('/images/inchunwa-logo.png')}
+          alt="Inchunwa logo"
+          class="page-header__logo"
+          onerror="this.style.display='none'"
+        />
+      </div>
       <h1 class="page-header__title animate-on-scroll">About the Inchunwa Project</h1>
       <p class="page-header__subtitle animate-on-scroll">
-        Founded by tribal community members to revitalize a cultural practice that has been asleep for over 100 years.
+        A Southeastern Ancestral Markings Revivalization Movement
+      </p>
+      <p class="page-header__tagline animate-on-scroll">
+        We believe in advocacy through education aimed to encourage future generations to embrace Indigenous Mississippian Identity and Body Sovereignty.
       </p>
     </div>
   </section>
+  <MotifDivider variant="maze" />
 
   {/* Mission & Vision Content */}
   <section class="section">
@@ -73,6 +87,17 @@ const featured = testimonials
     padding-block: var(--space-2xl);
   }
 
+  .page-header__logo-wrap {
+    margin-block-end: var(--space-lg);
+  }
+
+  .page-header__logo {
+    width: min(160px, 40vw);
+    height: auto;
+    display: block;
+    margin-inline: auto;
+  }
+
   .page-header__title {
     color: var(--color-white);
     margin-block-end: var(--space-md);
@@ -80,8 +105,17 @@ const featured = testimonials
 
   .page-header__subtitle {
     font-size: var(--text-lg);
-    color: rgba(253, 250, 250, 0.8);
+    color: rgba(253, 250, 250, 0.9);
     max-width: 50ch;
+    margin-inline: auto;
+    margin-block-end: var(--space-sm);
+    font-weight: 600;
+  }
+
+  .page-header__tagline {
+    font-size: var(--text-base);
+    color: rgba(253, 250, 250, 0.75);
+    max-width: 55ch;
     margin-inline: auto;
   }
 

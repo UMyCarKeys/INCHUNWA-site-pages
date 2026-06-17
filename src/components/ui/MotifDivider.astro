@@ -1,25 +1,68 @@
 ---
 interface Props {
   class?: string;
+  variant?: 'diamond' | 'scallop' | 'maze' | 'weave';
 }
 
-const { class: className = '' } = Astro.props;
+const { class: className = '', variant = 'diamond' } = Astro.props;
 ---
 
-<div class:list={['motif-divider', className]} role="separator">
-  <svg viewBox="0 0 400 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="motif-svg">
-    {/* Geometric pattern inspired by Southeastern Indigenous design — diamond/cross motifs */}
-    {/* This is a placeholder pattern — final designs should be reviewed by the Inchunwa team */}
-    <line x1="0" y1="12" x2="140" y2="12" stroke="currentColor" stroke-width="1" opacity="0.3" />
-    <polygon points="150,2 160,12 150,22 140,12" fill="none" stroke="currentColor" stroke-width="1.5" />
-    <polygon points="170,5 177,12 170,19 163,12" fill="currentColor" opacity="0.6" />
-    <circle cx="190" cy="12" r="3" fill="currentColor" />
-    <circle cx="200" cy="12" r="2" fill="currentColor" opacity="0.5" />
-    <circle cx="210" cy="12" r="3" fill="currentColor" />
-    <polygon points="230,5 237,12 230,19 223,12" fill="currentColor" opacity="0.6" />
-    <polygon points="250,2 260,12 250,22 240,12" fill="none" stroke="currentColor" stroke-width="1.5" />
-    <line x1="260" y1="12" x2="400" y2="12" stroke="currentColor" stroke-width="1" opacity="0.3" />
-  </svg>
+<div class:list={['motif-divider', `motif-divider--${variant}`, className]} role="separator">
+  {variant === 'diamond' && (
+    <svg viewBox="0 0 500 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="motif-svg motif-svg--draw">
+      <line x1="0" y1="14" x2="500" y2="14" stroke="currentColor" stroke-width="1" opacity="0.25" class="draw-line" />
+      <polygon points="50,4 62,14 50,24 38,14" fill="currentColor" opacity="0.8" class="draw-shape" style="animation-delay:0.1s" />
+      <circle cx="80" cy="14" r="4" fill="currentColor" opacity="0.6" class="draw-shape" style="animation-delay:0.2s" />
+      <polygon points="115,4 127,14 115,24 103,14" fill="currentColor" opacity="0.8" class="draw-shape" style="animation-delay:0.3s" />
+      <circle cx="145" cy="14" r="4" fill="currentColor" opacity="0.6" class="draw-shape" style="animation-delay:0.4s" />
+      <polygon points="180,4 192,14 180,24 168,14" fill="currentColor" opacity="0.8" class="draw-shape" style="animation-delay:0.5s" />
+      <circle cx="210" cy="14" r="4" fill="currentColor" opacity="0.6" class="draw-shape" style="animation-delay:0.6s" />
+      <polygon points="245,4 257,14 245,24 233,14" fill="currentColor" opacity="0.8" class="draw-shape" style="animation-delay:0.5s" />
+      <circle cx="275" cy="14" r="4" fill="currentColor" opacity="0.6" class="draw-shape" style="animation-delay:0.4s" />
+      <polygon points="310,4 322,14 310,24 298,14" fill="currentColor" opacity="0.8" class="draw-shape" style="animation-delay:0.3s" />
+      <circle cx="340" cy="14" r="4" fill="currentColor" opacity="0.6" class="draw-shape" style="animation-delay:0.2s" />
+      <polygon points="375,4 387,14 375,24 363,14" fill="currentColor" opacity="0.8" class="draw-shape" style="animation-delay:0.1s" />
+      <circle cx="405" cy="14" r="4" fill="currentColor" opacity="0.6" class="draw-shape" style="animation-delay:0.2s" />
+      <polygon points="440,4 452,14 440,24 428,14" fill="currentColor" opacity="0.8" class="draw-shape" style="animation-delay:0.3s" />
+    </svg>
+  )}
+
+  {variant === 'scallop' && (
+    <svg viewBox="0 0 500 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="motif-svg motif-svg--draw">
+      <rect x="0" y="0" width="500" height="4" fill="currentColor" opacity="0.9" />
+      <path d="M0,4 Q15,32 30,4 Q45,32 60,4 Q75,32 90,4 Q105,32 120,4 Q135,32 150,4 Q165,32 180,4 Q195,32 210,4 Q225,32 240,4 Q255,32 270,4 Q285,32 300,4 Q315,32 330,4 Q345,32 360,4 Q375,32 390,4 Q405,32 420,4 Q435,32 450,4 Q465,32 480,4 Q495,32 500,4"
+            fill="none" stroke="currentColor" stroke-width="3" opacity="0.9" class="draw-path" />
+      <path d="M5,4 Q17,24 30,4 Q43,24 55,4 Q68,24 80,4 Q93,24 105,4 Q118,24 130,4 Q143,24 155,4 Q168,24 180,4 Q193,24 205,4 Q218,24 230,4 Q243,24 255,4 Q268,24 280,4 Q293,24 305,4 Q318,24 330,4 Q343,24 355,4 Q368,24 380,4 Q393,24 405,4 Q418,24 430,4 Q443,24 455,4 Q468,24 475,4"
+            fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4" class="draw-path" style="animation-delay:0.15s" />
+    </svg>
+  )}
+
+  {variant === 'maze' && (
+    <svg viewBox="0 0 500 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="motif-svg motif-svg--draw">
+      <rect x="0" y="0" width="500" height="40" fill="currentColor" opacity="0.85" />
+      {[0,60,120,180,240,300,360,420].map((x) => (
+        <>
+          <rect x={x+4} y="4" width="44" height="32" rx="2" fill="none" stroke="white" stroke-width="2" opacity="0.9" />
+          <rect x={x+12} y="12" width="28" height="16" rx="1" fill="none" stroke="white" stroke-width="1.5" opacity="0.7" />
+          <circle cx={x+26} cy="20" r="3" fill="white" opacity="0.9" />
+          <path d={`M${x+26},4 L${x+26},12`} stroke="white" stroke-width="1.5" opacity="0.6" />
+        </>
+      ))}
+    </svg>
+  )}
+
+  {variant === 'weave' && (
+    <svg viewBox="0 0 500 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="motif-svg motif-svg--draw">
+      <rect x="0" y="0" width="500" height="50" fill="currentColor" opacity="0.85" />
+      {[0,40,80,120,160,200,240,280,320,360,400,440,480].map((x, i) => (
+        <>
+          <line x1={x} y1="0" x2={x+20} y2="50" stroke="white" stroke-width="2.5" opacity="0.7" />
+          <line x1={x+10} y1="0" x2={x+30} y2="50" stroke="white" stroke-width="2.5" opacity="0.7" />
+          <line x1={x+20} y1="0" x2={x} y2="50" stroke="white" stroke-width="2" opacity="0.5" />
+        </>
+      ))}
+    </svg>
+  )}
 </div>
 
 <style>
@@ -30,8 +73,59 @@ const { class: className = '' } = Astro.props;
     color: var(--color-pink);
   }
 
+  .motif-divider--maze,
+  .motif-divider--weave,
+  .motif-divider--scallop {
+    padding-block: 0;
+    color: var(--color-black);
+  }
+
   .motif-svg {
-    width: min(100%, 400px);
-    height: 24px;
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+  }
+
+  .motif-svg--draw .draw-shape {
+    opacity: 0;
+    transform: scale(0.5);
+    transform-origin: center;
+    animation: motif-pop 0.4s ease forwards;
+  }
+
+  .motif-svg--draw .draw-path {
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: motif-draw 1.2s ease forwards;
+  }
+
+  .motif-svg--draw .draw-line {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: motif-draw 0.8s ease forwards;
+  }
+
+  @keyframes motif-pop {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes motif-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .motif-svg--draw .draw-shape,
+    .motif-svg--draw .draw-path,
+    .motif-svg--draw .draw-line {
+      animation: none;
+      opacity: 1;
+      transform: none;
+      stroke-dashoffset: 0;
+    }
   }
 </style>

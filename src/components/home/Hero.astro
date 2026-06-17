@@ -1,26 +1,46 @@
 ---
 import Button from '../ui/Button.astro';
+import MotifDivider from '../ui/MotifDivider.astro';
 import { url } from '../../utils/paths';
 ---
 
-<section class="hero">
-  <div class="hero__bg" aria-hidden="true">
-    <div class="hero__pattern"></div>
-  </div>
-  <div class="container hero__content">
-    <p class="hero__eyebrow animate-on-scroll">Southeastern Indigenous Tattoo Revitalization</p>
-    <h1 class="hero__title animate-on-scroll">Reclaiming Ancestral Marks, Together</h1>
-    <p class="hero__subtitle animate-on-scroll">
-      A community-rooted podcast and project promoting body sovereignty through Indigenous Mississippian identity and cultural tattooing practices.
-    </p>
-    <div class="hero__actions animate-on-scroll">
-      <Button href={url('/episodes')} variant="primary" size="lg">Listen Now</Button>
-      <Button href={url('/about')} variant="outline" size="lg">Learn More</Button>
+<div class="hero-wrapper">
+  <MotifDivider variant="weave" />
+
+  <section class="hero">
+    <div class="hero__bg" aria-hidden="true">
+      <div class="hero__pattern"></div>
     </div>
-  </div>
-</section>
+    <div class="container hero__content">
+      <div class="hero__logo-wrap animate-on-scroll">
+        <img
+          src={url('/images/inchunwa-logo.png')}
+          alt="Inchunwa — Southeastern Ancestral Markings Revivalization"
+          class="hero__logo"
+          onerror="this.style.display='none'"
+        />
+      </div>
+      <p class="hero__eyebrow animate-on-scroll">Southeastern Ancestral Markings Revivalization</p>
+      <h1 class="hero__title animate-on-scroll">Reclaiming Ancestral Marks, Together</h1>
+      <p class="hero__subtitle animate-on-scroll">
+        A community-rooted podcast and project promoting body sovereignty through Indigenous Mississippian identity and cultural ancestral marking practices.
+      </p>
+      <div class="hero__actions animate-on-scroll">
+        <Button href={url('/episodes')} variant="primary" size="lg">Listen Now</Button>
+        <Button href={url('/about')} variant="outline" size="lg">Learn More</Button>
+      </div>
+    </div>
+  </section>
+
+  <MotifDivider variant="scallop" />
+</div>
 
 <style>
+  .hero-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
   .hero {
     position: relative;
     min-height: min(85vh, 700px);
@@ -58,6 +78,16 @@ import { url } from '../../utils/paths';
     max-width: 750px;
   }
 
+  .hero__logo-wrap {
+    margin-block-end: var(--space-lg);
+  }
+
+  .hero__logo {
+    width: min(220px, 55vw);
+    height: auto;
+    display: block;
+  }
+
   .hero__eyebrow {
     font-size: var(--text-sm);
     font-weight: 600;
@@ -88,7 +118,6 @@ import { url } from '../../utils/paths';
     gap: var(--space-md);
   }
 
-  /* Override outline button for dark background */
   .hero__actions :global(.btn--outline) {
     color: var(--color-white);
     border-color: var(--color-white);
