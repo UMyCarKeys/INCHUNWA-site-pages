@@ -1,0 +1,69 @@
+{
+  "year": "2025",
+  "order": 9,
+  "events": [
+    {
+      "text": "Awarded Potlatch Fund Grant.",
+      "links": [
+        {
+          "label": "Potlatch Fund",
+          "url": "https://www.potlatchfund.org/"
+        }
+      ]
+    },
+    {
+      "date": "March",
+      "text": "Inchunwa + Icho’wa Gathering in Ada, OK."
+    },
+    {
+      "date": "May",
+      "text": "Inchunwa + Icho’wa Meeting in Ada, OK."
+    },
+    {
+      "date": "May",
+      "text": "Inchunwa and the revivalization of Southeastern tattoos featured in an article published in The Guardian.",
+      "links": [
+        {
+          "label": "Read in The Guardian",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "date": "June",
+      "text": "“Icho’wa: Capturing the Resurgence of Ancestral Marking” published in Chokma Magazine.",
+      "links": [
+        {
+          "label": "Read in Chokma",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "date": "June",
+      "text": "Research trip to Three Mound Site: Poverty Point, Nanih Waiya (and the archives of MBCI Immi Archives), Moundville + Lake Tibbi.",
+      "links": [
+        {
+          "label": "Photos",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "date": "September",
+      "text": "Patreon Research Club begins."
+    },
+    {
+      "date": "September",
+      "text": "Inchunwa began working more closely with tattoo practitioners to support their work in ancestral marking."
+    },
+    {
+      "date": "October",
+      "text": "Patreon Book Club begins with the book Drawing With Great Needles."
+    },
+    {
+      "date": "October",
+      "text": "Indigi Pop X: Inchunwa had a panel and booth at IPX in North Carolina."
+    }
+  ]
+}

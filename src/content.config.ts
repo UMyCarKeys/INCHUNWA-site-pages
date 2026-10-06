@@ -25,6 +25,23 @@ const episodes = defineCollection({
   }),
 });
 
+const timeline = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/timeline' }),
+  schema: z.object({
+    year: z.string(),
+    order: z.number(),
+    events: z.array(z.object({
+      date: z.string().optional(),
+      text: z.string(),
+      // Links with an empty url are hidden until a source is filled in
+      links: z.array(z.object({
+        label: z.string(),
+        url: z.string().url().or(z.literal('')),
+      })).default([]),
+    })),
+  }),
+});
+
 const series = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/series' }),
   schema: z.object({
@@ -91,6 +108,7 @@ export const collections = {
   episodes,
   series,
   staff,
+  timeline,
   testimonials,
   funders,
   pages,

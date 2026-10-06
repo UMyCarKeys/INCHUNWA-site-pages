@@ -3,13 +3,23 @@ import PageLayout from '../layouts/PageLayout.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import MotifDivider from '../components/ui/MotifDivider.astro';
 import StaffGrid from '../components/about/StaffGrid.astro';
+import ProjectTimeline from '../components/about/ProjectTimeline.astro';
 import { url } from '../utils/paths';
 import TestimonialCard from '../components/about/TestimonialCard.astro';
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
 
 const aboutPage = await getCollection('pages');
 const about = aboutPage.find(p => p.id === 'about');
-const { Content } = about ? await render(about) : { Content: null };
+const aboutHtml = about?.rendered?.html ?? '';
+
+// The timeline sits right after the "Our Vision" section, so split the page copy
+// at the first heading that follows it. If that heading is renamed or removed,
+// the timeline falls to the end of the copy.
+const visionAt = aboutHtml.indexOf('id="our-vision"');
+const splitAt = visionAt === -1 ? -1 : aboutHtml.indexOf('<h2', visionAt);
+const [introHtml, restHtml] = splitAt === -1
+  ? [aboutHtml, '']
+  : [aboutHtml.slice(0, splitAt), aboutHtml.slice(splitAt)];
 
 const testimonials = await getCollection('testimonials');
 const featured = testimonials
@@ -20,7 +30,6 @@ const featured = testimonials
 <PageLayout title="About" description="Learn about the Inchunwa Project's mission, vision, history, and the community members leading this work.">
 
   {/* Page Header */}
-  <MotifDivider variant="maze" />
   <section class="section page-header">
     <div class="container container--narrow">
       <div class="page-header__logo-wrap animate-on-scroll">
@@ -40,16 +49,23 @@ const featured = testimonials
       </p>
     </div>
   </section>
-  <MotifDivider variant="maze" />
 
   {/* Mission & Vision Content */}
-  <section class="section">
+  <section class="section about-copy">
     <div class="container container--narrow">
-      <div class="prose animate-on-scroll">
-        {Content && <Content />}
-      </div>
+      <div class="prose animate-on-scroll" set:html={introHtml} />
     </div>
   </section>
+
+  <ProjectTimeline />
+
+  {restHtml && (
+    <section class="section about-copy">
+      <div class="container container--narrow">
+        <div class="prose animate-on-scroll" set:html={restHtml} />
+      </div>
+    </section>
+  )}
 
   <MotifDivider />
 

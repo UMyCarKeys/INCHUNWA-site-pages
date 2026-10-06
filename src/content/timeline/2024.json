@@ -1,0 +1,65 @@
+{
+  "year": "2024",
+  "order": 8,
+  "events": [
+    {
+      "text": "Lisa Fruichantie comes on board as Inchunwa Project Director."
+    },
+    {
+      "date": "April",
+      "text": "Second live recording at IndigiPopX at the First Americans Museum in Oklahoma City, Oklahoma.",
+      "links": [
+        {
+          "label": "First Americans Museum",
+          "url": "https://www.famok.org/"
+        },
+        {
+          "label": "Photos",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "date": "May",
+      "text": "Our first retreat is held in Broken Bow, Oklahoma, to receive feedback from people in our communities on the direction of the project and movement. This is the first time many people received their markings at once."
+    },
+    {
+      "date": "October",
+      "text": "Inchunwa, along with Chickasaw Nation citizens, hosts a Chickasaw Community Conversation around Tattoo Revitalization. Out of this, Icho’wa was formed.",
+      "links": [
+        {
+          "label": "Photos",
+          "url": ""
+        },
+        {
+          "label": "Photos 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "date": "October",
+      "text": "Lisa presents about Inchunwa at iWow in North Carolina.",
+      "links": [
+        {
+          "label": "Photos",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "date": "November",
+      "text": "Instagram Live recording at the Indigenous Tattoo and Music Festival in Albuquerque, New Mexico."
+    },
+    {
+      "date": "November",
+      "text": "Article published about Inchunwa in the Choctaw Nation’s Tribal newspaper, the Biskinik.",
+      "links": [
+        {
+          "label": "Read in the Biskinik",
+          "url": "https://biskinik.com/news/the-inchunwa-project-a-journey-to-reviving-southeastern-tribal-tattoos/"
+        }
+      ]
+    }
+  ]
+}

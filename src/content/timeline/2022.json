@@ -1,0 +1,15 @@
+{
+  "year": "2022",
+  "order": 6,
+  "events": [
+    {
+      "text": "Launches Patreon to build community support.",
+      "links": [
+        {
+          "label": "Patreon",
+          "url": "https://www.patreon.com/inchunwa"
+        }
+      ]
+    }
+  ]
+}

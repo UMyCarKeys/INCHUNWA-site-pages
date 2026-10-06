@@ -11,6 +11,7 @@ interface Props {
 }
 
 const { name, nation, label, role, bio, photo, photoAlt, email } = Astro.props;
+const bioParagraphs = bio.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 ---
 
 <div class="staff-card animate-on-scroll hover-lift">
@@ -30,7 +31,7 @@ const { name, nation, label, role, bio, photo, photoAlt, email } = Astro.props;
   <h3 class="staff-card__name">{name}</h3>
   {nation && <p class="staff-card__nation">{nation}</p>}
   <p class="staff-card__role">{role}</p>
-  {bio && <p class="staff-card__bio">{bio}</p>}
+  {bioParagraphs.map((paragraph) => <p class="staff-card__bio">{paragraph}</p>)}
   {email && (
     <a href={`mailto:${email}`} class="staff-card__email">{email}</a>
   )}
