@@ -7,7 +7,7 @@
     },
     {
       "date": "April",
-      "text": "Second live recording at IndigiPopX at the First Americans Museum in Oklahoma City, Oklahoma.",
+      "text": "Second [live recording at IndigiPopX](/episodes/ep-21-indigipopx) at the First Americans Museum in Oklahoma City, Oklahoma.",
       "links": [
         {
           "label": "First Americans Museum",
@@ -15,25 +15,21 @@
         },
         {
           "label": "Photos",
-          "url": ""
+          "url": "https://drive.google.com/drive/folders/1-GWa7hpfuHCdkd45RYDJYuul9gNvWNdT?usp=sharing"
         }
       ]
     },
     {
       "date": "May",
-      "text": "Our first retreat is held in Broken Bow, Oklahoma, to receive feedback from people in our communities on the direction of the project and movement. This is the first time many people received their markings at once."
+      "text": "[Our first retreat is held in Broken Bow, Oklahoma](https://drive.google.com/drive/folders/1Ei1xT8xMZiaJ7NztDxhKOkrEFVkeJYs9?usp=sharing), to receive feedback from people in our communities on the direction of the project and movement. This is the first time many people received their markings at once."
     },
     {
       "date": "October",
-      "text": "Inchunwa, along with Chickasaw Nation citizens, hosts a Chickasaw Community Conversation around Tattoo Revitalization. Out of this, Icho’wa was formed.",
+      "text": "[Inchunwa, along with Chickasaw Nation citizens, hosts a Chickasaw Community Conversation around Tattoo Revitalization](https://drive.google.com/drive/folders/1DRWvdiAzPCZJidu3g-0-yTE7DyNAu_KS?usp=sharing). Out of this, Icho’wa was formed.",
       "links": [
         {
-          "label": "Photos",
-          "url": ""
-        },
-        {
-          "label": "Photos 2",
-          "url": ""
+          "label": "More photos",
+          "url": "https://drive.google.com/drive/folders/1YulzHsW50mFEn7eHGx72mBFldO4iAUsx?usp=sharing"
         }
       ]
     },
@@ -49,17 +45,12 @@
     },
     {
       "date": "November",
-      "text": "Instagram Live recording at the Indigenous Tattoo and Music Festival in Albuquerque, New Mexico."
+      "text": "[Instagram Live recording](https://www.instagram.com/reel/DCu-TfTyXJG/) at the Indigenous Tattoo and Music Festival in Albuquerque, New Mexico."
     },
     {
       "date": "November",
-      "text": "Article published about Inchunwa in the Choctaw Nation’s Tribal newspaper, the Biskinik.",
-      "links": [
-        {
-          "label": "Read in the Biskinik",
-          "url": "https://biskinik.com/news/the-inchunwa-project-a-journey-to-reviving-southeastern-tribal-tattoos/"
-        }
-      ]
+      "text": "[Article published about Inchunwa in the Choctaw Nation’s Tribal newspaper, the Biskinik](https://biskinik.com/news/the-inchunwa-project-a-journey-to-reviving-southeastern-tribal-tattoos/).",
+      "links": []
     }
   ]
 }

@@ -8,6 +8,7 @@ episodeNumber: 25
 episodeType: "full"
 duration: "01:38:52"
 audioUrl: "https://www.buzzsprout.com/1810796/episodes/17755788.mp3"
+coverImage: "https://storage.buzzsprout.com/yanl9t563emvov9knlibunhvsp80?.jpg"
 audioLength: 71250703
 explicit: true
 featured: true

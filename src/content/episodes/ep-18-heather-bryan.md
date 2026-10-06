@@ -8,6 +8,7 @@ episodeNumber: 18
 episodeType: "full"
 duration: "02:14:51"
 audioUrl: "https://www.buzzsprout.com/1810796/episodes/13465794.mp3"
+coverImage: "https://storage.buzzsprout.com/ybpp6e1f801urn8gofevznlcbixp?.jpg"
 audioLength: 97161422
 explicit: true
 featured: false

@@ -35,6 +35,7 @@ const sorted = episodes.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate
             series={episode.data.series}
             episodeNumber={episode.data.episodeNumber}
             audioUrl={episode.data.audioUrl}
+            coverImage={episode.data.coverImage}
           />
         ))}
       </div>

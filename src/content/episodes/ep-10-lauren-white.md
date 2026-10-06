@@ -8,6 +8,7 @@ episodeNumber: 10
 episodeType: "full"
 duration: "01:22:23"
 audioUrl: "https://www.buzzsprout.com/1810796/episodes/11052982.mp3"
+coverImage: "https://storage.buzzsprout.com/9l1azeo4fp6vwqdnzrcbg2227aum?.jpg"
 audioLength: 59366887
 explicit: false
 featured: false

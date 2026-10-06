@@ -10,7 +10,7 @@ interface Props {
 const { currentPath = '' } = Astro.props;
 ---
 
-<header class="site-header">
+<header class="site-header" transition:name="site-header" transition:animate="none">
   <div class="container header-inner">
     <a href={url('/')} class="logo" aria-label="Inchunwa Project — Home">
       <span class="logo-text">Inchunwa</span>

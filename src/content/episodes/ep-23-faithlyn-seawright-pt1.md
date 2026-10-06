@@ -8,6 +8,7 @@ episodeNumber: 23
 episodeType: "full"
 duration: "01:30:30"
 audioUrl: "https://www.buzzsprout.com/1810796/episodes/17528424.mp3"
+coverImage: "https://storage.buzzsprout.com/l1ffp4g74jt4wg8b34a6kwleef1e?.jpg"
 audioLength: 65215135
 explicit: true
 featured: true

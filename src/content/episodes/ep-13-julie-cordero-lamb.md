@@ -8,6 +8,7 @@ episodeNumber: 13
 episodeType: "full"
 duration: "01:52:21"
 audioUrl: "https://www.buzzsprout.com/1810796/episodes/12134520.mp3"
+coverImage: "https://storage.buzzsprout.com/6e3hh3pukjzgshkj0bsiww2h7oee?.jpg"
 audioLength: 80949757
 explicit: true
 featured: false

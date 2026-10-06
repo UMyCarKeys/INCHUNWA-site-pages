@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import sanitizeHtml from 'sanitize-html';
 import MarkdownIt from 'markdown-it';
 import type { APIContext } from 'astro';
+import { SHOW_ARTWORK } from '../utils/podcast';
 
 const parser = new MarkdownIt();
 
@@ -23,7 +24,7 @@ export async function GET(context: APIContext) {
       '<language>en-us</language>',
       '<itunes:author>Inchunwa Project</itunes:author>',
       '<itunes:owner><itunes:name>Inchunwa Project</itunes:name><itunes:email>inchunwaproject@gmail.com</itunes:email></itunes:owner>',
-      '<itunes:image href="https://storage.buzzsprout.com/4gr88dxnkfw15aliabptmzvz2pb7?.jpg" />',
+      `<itunes:image href="${SHOW_ARTWORK}" />`,
       '<itunes:category text="Society &amp; Culture" />',
       '<itunes:category text="Arts"><itunes:category text="Visual Arts" /></itunes:category>',
       '<itunes:category text="Health &amp; Fitness"><itunes:category text="Mental Health" /></itunes:category>',

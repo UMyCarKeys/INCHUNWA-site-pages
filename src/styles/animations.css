@@ -75,3 +75,10 @@
   transform: translateY(0);
   box-shadow: var(--shadow-sm);
 }
+
+/* Page changes: draw the header and podcast player as their own layers above the
+   fading page content, so content never flashes in front of them mid-transition */
+::view-transition-group(site-header),
+::view-transition-group(audio-player) {
+  z-index: 100;
+}

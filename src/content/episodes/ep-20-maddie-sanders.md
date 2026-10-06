@@ -8,6 +8,7 @@ episodeNumber: 20
 episodeType: "full"
 duration: "01:18:23"
 audioUrl: "https://www.buzzsprout.com/1810796/episodes/14964069.mp3"
+coverImage: "https://storage.buzzsprout.com/u6afgq62uul0csty3v7j1gz1rd24?.jpg"
 audioLength: 56494497
 explicit: true
 featured: false

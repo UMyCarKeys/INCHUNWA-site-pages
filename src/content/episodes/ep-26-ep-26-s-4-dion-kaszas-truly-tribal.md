@@ -6,6 +6,7 @@ episodeNumber: 26
 episodeType: "full"
 duration: "00:53:21"
 audioUrl: "https://www.buzzsprout.com/1810796/episodes/19203756.mp3"
+coverImage: "https://storage.buzzsprout.com/6fpyvat21aozrli155bj4xgxts37?.jpg"
 audioLength: 38468918
 explicit: false
 featured: false

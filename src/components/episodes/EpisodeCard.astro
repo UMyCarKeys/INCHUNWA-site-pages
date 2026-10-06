@@ -1,5 +1,6 @@
 ---
 import { url } from '../../utils/paths';
+import { SHOW_ARTWORK } from '../../utils/podcast';
 
 interface Props {
   id: string;
@@ -10,9 +11,10 @@ interface Props {
   series?: string;
   episodeNumber?: number;
   audioUrl: string;
+  coverImage?: string;
 }
 
-const { id, title, description, pubDate, duration, series, episodeNumber, audioUrl } = Astro.props;
+const { id, title, description, pubDate, duration, series, episodeNumber, audioUrl, coverImage } = Astro.props;
 const episodeUrl = url(`/episodes/${id}`);
 ---
 
@@ -34,7 +36,9 @@ const episodeUrl = url(`/episodes/${id}`);
   <button
     class="episode-card__play"
     aria-label={`Play ${title}`}
+    data-play-episode
     data-audio-url={audioUrl}
+    data-episode-art={coverImage || SHOW_ARTWORK}
     data-episode-title={title}
     data-episode-url={episodeUrl}
   >
@@ -144,24 +148,3 @@ const episodeUrl = url(`/episodes/${id}`);
   }
 </style>
 
-<script>
-  function initPlayButtons() {
-    document.querySelectorAll('.episode-card__play').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const button = e.currentTarget as HTMLElement;
-        window.dispatchEvent(new CustomEvent('play-episode', {
-          detail: {
-            title: button.dataset.episodeTitle,
-            audioUrl: button.dataset.audioUrl,
-            episodeUrl: button.dataset.episodeUrl,
-          }
-        }));
-      });
-    });
-  }
-
-  initPlayButtons();
-  document.addEventListener('astro:after-swap', initPlayButtons);
-</script>

@@ -1,25 +1,90 @@
 ---
+import { SHOW_ARTWORK } from '../../utils/podcast';
 ---
 
-<div id="audio-player" class="audio-player" data-hidden="true" transition:persist>
-  <div class="audio-player__bar">
-    <button class="audio-player__minimize" aria-label="Minimize player" id="player-minimize">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="6 15 12 9 18 15" id="minimize-icon" />
-      </svg>
-    </button>
+{/*
+  Persisted across view transitions, so the <audio> element (and playback) survives
+  page changes. Audio streams straight from Buzzsprout's MP3 URL; if a browser can't
+  load it, the player falls back to Buzzsprout's own embed for that episode.
+*/}
+<div
+  id="audio-player"
+  class="audio-player"
+  data-hidden="true"
+  data-default-art={SHOW_ARTWORK}
+  transition:persist
+  transition:name="audio-player"
+  transition:animate="none"
+  role="region"
+  aria-label="Podcast player"
+>
+  <audio id="player-audio" preload="none"></audio>
+  <div class="audio-player__progress-line" aria-hidden="true"></div>
 
-    <a href="#" class="audio-player__title" id="player-title">No episode loaded</a>
+  <div class="audio-player__inner">
+    <img class="audio-player__art" id="player-art" alt="" width="128" height="128" decoding="async" />
 
-    <button class="audio-player__close" aria-label="Close player" id="player-close">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-      </svg>
-    </button>
-  </div>
+    <div class="audio-player__main">
+    <div class="audio-player__bar">
+      <button class="audio-player__play" id="player-play" aria-label="Play">
+        <svg class="icon-play" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <polygon points="6,3 20,12 6,21" />
+        </svg>
+        <svg class="icon-pause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <rect x="5" y="3" width="5" height="18" rx="1" /><rect x="14" y="3" width="5" height="18" rx="1" />
+        </svg>
+        <span class="audio-player__spinner" aria-hidden="true"></span>
+      </button>
 
-  <div class="audio-player__embed" id="player-embed">
-    <!-- Buzzsprout iframe injected here on play -->
+      <div class="audio-player__info">
+        <a href="#" class="audio-player__title" id="player-title">No episode loaded</a>
+        <span class="audio-player__time" id="player-time">0:00 / 0:00</span>
+      </div>
+
+      <div class="audio-player__controls">
+        <button class="audio-player__btn audio-player__skip" id="player-back" aria-label="Back 15 seconds">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 3-6.7" /><polyline points="3 3 3 9 9 9" />
+          </svg>
+          <span class="audio-player__skip-label">15</span>
+        </button>
+        <button class="audio-player__btn audio-player__skip" id="player-forward" aria-label="Forward 30 seconds">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-3-6.7" /><polyline points="21 3 21 9 15 9" />
+          </svg>
+          <span class="audio-player__skip-label">30</span>
+        </button>
+        <button class="audio-player__btn audio-player__speed" id="player-speed" aria-label="Playback speed 1x">1×</button>
+      </div>
+
+      <button class="audio-player__btn" id="player-minimize" aria-label="Minimize player" aria-expanded="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9" id="minimize-icon" />
+        </svg>
+      </button>
+      <button class="audio-player__btn" id="player-close" aria-label="Close player">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="audio-player__seek-row">
+      <canvas class="audio-player__wave" id="player-wave" aria-hidden="true"></canvas>
+      <input
+        type="range"
+        class="audio-player__seek"
+        id="player-seek"
+        min="0"
+        max="0"
+        step="1"
+        value="0"
+        aria-label="Seek"
+      />
+    </div>
+
+    <div class="audio-player__fallback" id="player-fallback" hidden></div>
+    </div>
   </div>
 </div>
 
@@ -28,78 +93,378 @@
     if ((window as any).__inchunwaPlayerInit) return;
     (window as any).__inchunwaPlayerInit = true;
 
+    const STORAGE_KEY = 'inchunwa-player';
+    const SPEEDS = [1, 1.25, 1.5, 1.75, 2, 0.75];
+
     const player   = document.getElementById('audio-player') as HTMLElement;
+    const audio    = document.getElementById('player-audio') as HTMLAudioElement;
+    const playBtn  = document.getElementById('player-play') as HTMLButtonElement;
     const titleEl  = document.getElementById('player-title') as HTMLAnchorElement;
-    const embedEl  = document.getElementById('player-embed') as HTMLElement;
+    const timeEl   = document.getElementById('player-time') as HTMLElement;
+    const seek     = document.getElementById('player-seek') as HTMLInputElement;
+    const backBtn  = document.getElementById('player-back') as HTMLButtonElement;
+    const fwdBtn   = document.getElementById('player-forward') as HTMLButtonElement;
+    const speedBtn = document.getElementById('player-speed') as HTMLButtonElement;
     const minimize = document.getElementById('player-minimize') as HTMLButtonElement;
+    const minIcon  = document.getElementById('minimize-icon') as unknown as SVGPolylineElement;
     const closeBtn = document.getElementById('player-close') as HTMLButtonElement;
-    const minIcon  = document.getElementById('minimize-icon') as SVGPolylineElement;
+    const fallback = document.getElementById('player-fallback') as HTMLElement;
+    const artEl    = document.getElementById('player-art') as HTMLImageElement;
+    const defaultArt = player.dataset.defaultArt || '';
+    const waveEl   = document.getElementById('player-wave') as HTMLCanvasElement;
 
-    if (!player) return;
+    if (!player || !audio) return;
 
-    let isMinimized = false;
+    type Episode = { title: string; audioUrl: string; episodeUrl: string; artwork?: string };
+    let current: Episode | null = null;
+    let isSeeking = false;
+    let lastSaved = 0;
+    let progress = 0; // 0..1
+    let hoverAt: number | null = null; // 0..1 while the pointer is over the waveform
+    let peaks: number[] = [];
 
-    function loadEpisode(episodeId: string, title: string, episodeUrl: string) {
-      titleEl.textContent = title;
-      titleEl.href = episodeUrl || '#';
+    const formatTime = (s: number) => {
+      if (!isFinite(s) || s < 0) s = 0;
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const sec = Math.floor(s % 60).toString().padStart(2, '0');
+      return h ? `${h}:${m.toString().padStart(2, '0')}:${sec}` : `${m}:${sec}`;
+    };
 
-      // Clear previous embed and any Buzzsprout script tags we injected
-      embedEl.innerHTML = `<div id="buzzsprout-player-${episodeId}"></div>`;
-      document.querySelectorAll('script[data-bz-ep]').forEach(s => s.remove());
+    const episodeIdOf = (audioUrl: string) => audioUrl.match(/\/(\d+)\.mp3/)?.[1];
 
-      // Use Buzzsprout's official JS embed — it creates its own iframe internally
-      // with the correct auth/CDN context so audio.buzzsprout.com isn't blocked
-      const script = document.createElement('script');
-      script.src = `https://www.buzzsprout.com/1810796/${episodeId}.js?container_id=buzzsprout-player-${episodeId}&player=small`;
-      script.setAttribute('data-bz-ep', episodeId);
-      script.charset = 'utf-8';
-      document.body.appendChild(script);
+    function save() {
+      if (!current) return;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          ...current,
+          time: audio.ended ? 0 : audio.currentTime,
+          rate: audio.playbackRate,
+          minimized: player.classList.contains('is-minimized'),
+        }));
+      } catch {}
+    }
 
-      player.dataset.hidden = 'false';
-      if (isMinimized) {
-        isMinimized = false;
-        player.classList.remove('is-minimized');
-        minIcon.setAttribute('points', '6 15 12 9 18 15');
-        minimize.setAttribute('aria-label', 'Minimize player');
+    // Decorative waveform: a stable, speech-like shape per episode (seeded by its ID).
+    // Real peaks would mean downloading and decoding the whole MP3 first.
+    function makePeaks(seedText: string, count = 240) {
+      let seed = 0;
+      for (const ch of seedText) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
+      const rand = () => {
+        seed = (seed + 0x6d2b79f5) >>> 0;
+        let t = seed;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+      const raw = Array.from({ length: count }, rand);
+      return raw.map((_, i) => {
+        // Smooth neighbours into phrases, then add per-bar jitter
+        let sum = 0, n = 0;
+        for (let k = -3; k <= 3; k++) {
+          const v = raw[i + k];
+          if (v !== undefined) { sum += v; n++; }
+        }
+        const phrase = sum / n;
+        return Math.min(1, 0.18 + 0.55 * phrase + 0.35 * raw[i] * phrase);
+      });
+    }
+
+    function drawWave() {
+      const width = waveEl.clientWidth;
+      const height = waveEl.clientHeight;
+      if (!width || !height || !peaks.length) return;
+      const dpr = window.devicePixelRatio || 1;
+      if (waveEl.width !== Math.round(width * dpr) || waveEl.height !== Math.round(height * dpr)) {
+        waveEl.width = Math.round(width * dpr);
+        waveEl.height = Math.round(height * dpr);
+      }
+      const ctx = waveEl.getContext('2d');
+      if (!ctx) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      const styles = getComputedStyle(player);
+      const played = styles.getPropertyValue('--color-pink').trim() || '#eaa8a3';
+      const unplayed = 'rgba(253, 250, 250, 0.22)';
+      const preview = 'rgba(234, 168, 163, 0.5)';
+
+      const barWidth = 3;
+      const gap = 2;
+      const count = Math.max(1, Math.floor((width + gap) / (barWidth + gap)));
+      const offset = (width - (count * (barWidth + gap) - gap)) / 2;
+      for (let i = 0; i < count; i++) {
+        const at = (i + 0.5) / count;
+        const peak = peaks[Math.floor((i / count) * peaks.length)];
+        const barHeight = Math.max(3, peak * height);
+        const x = offset + i * (barWidth + gap);
+        const y = (height - barHeight) / 2;
+        ctx.fillStyle = at <= progress ? played : hoverAt !== null && at <= hoverAt ? preview : unplayed;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(x, y, barWidth, barHeight, 1.5);
+        else ctx.rect(x, y, barWidth, barHeight);
+        ctx.fill();
       }
     }
 
+    function setProgress(fraction: number) {
+      progress = Math.min(1, Math.max(0, fraction || 0));
+      player.style.setProperty('--progress', `${progress * 100}%`);
+      drawWave();
+    }
+
+    function updateTime() {
+      const duration = audio.duration;
+      if (!isSeeking) seek.value = String(Math.floor(audio.currentTime));
+      if (isFinite(duration)) seek.max = String(Math.floor(duration));
+      timeEl.textContent = `${formatTime(audio.currentTime)} / ${formatTime(duration)}`;
+      if (!isSeeking) setProgress(isFinite(duration) && duration > 0 ? audio.currentTime / duration : 0);
+    }
+
+    const innerEl = player.querySelector('.audio-player__inner') as HTMLElement;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function setMinimized(min: boolean, animate = false) {
+      const fromHeight = innerEl.offsetHeight;
+      player.classList.toggle('is-minimized', min);
+      if (animate && !reduceMotion.matches && player.dataset.hidden === 'false') {
+        // Glide between the two heights, then fade in whatever just appeared
+        const toHeight = innerEl.offsetHeight;
+        const easing = 'cubic-bezier(0.2, 0.8, 0.2, 1)';
+        innerEl.style.overflow = 'hidden';
+        innerEl
+          .animate([{ height: `${fromHeight}px` }, { height: `${toHeight}px` }], { duration: 320, easing })
+          .finished.finally(() => { innerEl.style.overflow = ''; });
+        const appearing = min
+          ? player.querySelectorAll<HTMLElement>('.audio-player__bar, .audio-player__progress-line')
+          : player.querySelectorAll<HTMLElement>('.audio-player__art, .audio-player__controls, .audio-player__seek-row');
+        appearing.forEach((el) => {
+          el.animate(
+            [{ opacity: 0, transform: el.classList.contains('audio-player__art') ? 'scale(0.85)' : 'translateY(6px)' }, { opacity: 1, transform: 'none' }],
+            { duration: 280, delay: 80, easing, fill: 'backwards' },
+          );
+        });
+      }
+      minIcon.setAttribute('points', min ? '6 15 12 9 18 15' : '6 9 12 15 18 9');
+      minimize.setAttribute('aria-label', min ? 'Expand player' : 'Minimize player');
+      minimize.setAttribute('aria-expanded', String(!min));
+    }
+
+    function setRate(rate: number) {
+      audio.playbackRate = rate;
+      const label = `${rate}×`;
+      speedBtn.textContent = label;
+      speedBtn.setAttribute('aria-label', `Playback speed ${rate}x`);
+    }
+
+    function updateMediaSession() {
+      if (!('mediaSession' in navigator) || !current) return;
+      const artwork = current.artwork || defaultArt;
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: current.title,
+        artist: 'Inchunwa Project',
+        album: 'Inchunwa Podcast',
+        artwork: artwork ? [{ src: new URL(artwork, location.href).href, sizes: '1400x1400', type: 'image/jpeg' }] : [],
+      });
+    }
+
+    function showFallback() {
+      if (!current) return;
+      const id = episodeIdOf(current.audioUrl);
+      if (!id) return;
+      player.classList.add('is-fallback');
+      fallback.hidden = false;
+      fallback.innerHTML = `<div id="buzzsprout-player-${id}"></div>`;
+      document.querySelectorAll('script[data-bz-ep]').forEach((s) => s.remove());
+      const script = document.createElement('script');
+      script.src = `https://www.buzzsprout.com/1810796/${id}.js?container_id=buzzsprout-player-${id}&player=small`;
+      script.setAttribute('data-bz-ep', id);
+      script.charset = 'utf-8';
+      document.body.appendChild(script);
+    }
+
+    function clearFallback() {
+      player.classList.remove('is-fallback');
+      fallback.hidden = true;
+      fallback.innerHTML = '';
+      document.querySelectorAll('script[data-bz-ep]').forEach((s) => s.remove());
+    }
+
+    // Hide the previous episode's art until the new image has arrived
+    function setArt(src: string, title: string) {
+      artEl.alt = title ? `Artwork for ${title}` : '';
+      if (!src || artEl.getAttribute('src') === src) return;
+      artEl.classList.add('is-pending');
+      artEl.onload = () => artEl.classList.remove('is-pending');
+      artEl.onerror = () => {
+        if (defaultArt && artEl.getAttribute('src') !== defaultArt) artEl.src = defaultArt;
+        else artEl.classList.remove('is-pending');
+      };
+      artEl.src = src;
+    }
+
+    function load(ep: Episode, startAt = 0) {
+      clearFallback();
+      current = ep;
+      titleEl.textContent = ep.title;
+      titleEl.href = ep.episodeUrl || '#';
+      setArt(ep.artwork || defaultArt, ep.title);
+      peaks = makePeaks(episodeIdOf(ep.audioUrl) || ep.audioUrl);
+      audio.src = ep.audioUrl;
+      audio.preload = 'metadata';
+      if (startAt > 0) {
+        audio.addEventListener('loadedmetadata', () => { audio.currentTime = startAt; updateTime(); }, { once: true });
+      }
+      player.dataset.hidden = 'false';
+      updateMediaSession();
+      updateTime();
+    }
+
+    function play() {
+      audio.play().catch(() => { /* blocked until the visitor taps play */ });
+    }
+
+    function playEpisode(ep: Episode) {
+      if (current && current.audioUrl === ep.audioUrl) {
+        // Same episode: toggle instead of restarting
+        audio.paused ? play() : audio.pause();
+        player.dataset.hidden = 'false';
+        return;
+      }
+      load(ep);
+      play();
+      save();
+    }
+
+    // ---- Audio events ----
+    audio.addEventListener('play', () => { player.classList.add('is-playing'); playBtn.setAttribute('aria-label', 'Pause'); });
+    audio.addEventListener('pause', () => { player.classList.remove('is-playing'); playBtn.setAttribute('aria-label', 'Play'); save(); });
+    audio.addEventListener('waiting', () => player.classList.add('is-loading'));
+    audio.addEventListener('playing', () => player.classList.remove('is-loading'));
+    audio.addEventListener('canplay', () => player.classList.remove('is-loading'));
+    audio.addEventListener('loadedmetadata', updateTime);
+    audio.addEventListener('timeupdate', () => {
+      updateTime();
+      if (Math.abs(audio.currentTime - lastSaved) >= 5) { lastSaved = audio.currentTime; save(); }
+    });
+    audio.addEventListener('ended', () => { save(); });
+    audio.addEventListener('error', () => {
+      player.classList.remove('is-loading', 'is-playing');
+      if (audio.getAttribute('src')) showFallback();
+    });
+
+    // ---- Controls ----
+    playBtn.addEventListener('click', () => (audio.paused ? play() : audio.pause()));
+    backBtn.addEventListener('click', () => { audio.currentTime = Math.max(0, audio.currentTime - 15); });
+    fwdBtn.addEventListener('click', () => {
+      audio.currentTime = Math.min(isFinite(audio.duration) ? audio.duration : Infinity, audio.currentTime + 30);
+    });
+    speedBtn.addEventListener('click', () => {
+      const next = SPEEDS[(SPEEDS.indexOf(audio.playbackRate) + 1) % SPEEDS.length] ?? 1;
+      setRate(next);
+      save();
+    });
+
+    seek.addEventListener('input', () => {
+      isSeeking = true;
+      const duration = audio.duration;
+      timeEl.textContent = `${formatTime(Number(seek.value))} / ${formatTime(duration)}`;
+      if (isFinite(duration) && duration > 0) setProgress(Number(seek.value) / duration);
+    });
+    seek.addEventListener('change', () => {
+      audio.currentTime = Number(seek.value);
+      isSeeking = false;
+      save();
+    });
+
+    // Lighter preview of where a click would jump to
+    seek.addEventListener('pointermove', (e) => {
+      const rect = seek.getBoundingClientRect();
+      hoverAt = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+      drawWave();
+    });
+    seek.addEventListener('pointerleave', () => { hoverAt = null; drawWave(); });
+
+    // Redraw when the waveform appears (expanding the player) or the window resizes
+    new ResizeObserver(() => drawWave()).observe(waveEl);
+
     minimize.addEventListener('click', () => {
-      isMinimized = !isMinimized;
-      player.classList.toggle('is-minimized', isMinimized);
-      minIcon.setAttribute('points', isMinimized ? '6 9 12 15 18 9' : '6 15 12 9 18 15');
-      minimize.setAttribute('aria-label', isMinimized ? 'Expand player' : 'Minimize player');
+      setMinimized(!player.classList.contains('is-minimized'), true);
+      save();
     });
 
     closeBtn.addEventListener('click', () => {
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load();
+      clearFallback();
+      current = null;
       player.dataset.hidden = 'true';
-      embedEl.innerHTML = '';
-      document.querySelectorAll('script[data-bz-ep]').forEach(s => s.remove());
-      sessionStorage.removeItem('inchunwa-player');
+      try { localStorage.removeItem(STORAGE_KEY); } catch {}
+      if ('mediaSession' in navigator) navigator.mediaSession.metadata = null;
     });
 
+    // Lock screen / headphone / keyboard media keys
+    if ('mediaSession' in navigator) {
+      const ms = navigator.mediaSession;
+      const handlers: [MediaSessionAction, MediaSessionActionHandler][] = [
+        ['play', () => play()],
+        ['pause', () => audio.pause()],
+        ['seekbackward', (d) => { audio.currentTime = Math.max(0, audio.currentTime - (d.seekOffset || 15)); }],
+        ['seekforward', (d) => { audio.currentTime = audio.currentTime + (d.seekOffset || 30); }],
+        ['seekto', (d) => { if (d.seekTime != null) audio.currentTime = d.seekTime; }],
+      ];
+      handlers.forEach(([action, handler]) => {
+        try { ms.setActionHandler(action, handler); } catch {}
+      });
+    }
+
+    // ---- Requests to play, from episode cards and episode pages ----
     window.addEventListener('play-episode', ((e: CustomEvent) => {
-      const { title, audioUrl, episodeUrl } = e.detail;
-      const episodeId = (audioUrl as string).match(/\/(\d+)\.mp3/)?.[1];
-      if (!episodeId) return;
-      loadEpisode(episodeId, title, episodeUrl);
-      try {
-        sessionStorage.setItem('inchunwa-player', JSON.stringify({ title, audioUrl, episodeUrl }));
-      } catch {}
+      const { title, audioUrl, episodeUrl, artwork } = e.detail || {};
+      if (!audioUrl) return;
+      playEpisode({ title, audioUrl, episodeUrl, artwork });
     }) as EventListener);
 
-    // Restore last session
+    // Any element with data-play-episode starts that episode in this player
+    document.addEventListener('click', (e) => {
+      const trigger = (e.target as Element).closest<HTMLElement>('[data-play-episode]');
+      if (!trigger) return;
+      e.preventDefault();
+      const { audioUrl, episodeTitle, episodeUrl, episodeArt } = trigger.dataset;
+      if (!audioUrl) return;
+      playEpisode({ title: episodeTitle || '', audioUrl, episodeUrl: episodeUrl || '', artwork: episodeArt });
+    });
+
+    // Warm up Buzzsprout connections as soon as someone reaches for a play button.
+    // Browsers drop idle preconnects after ~10s, so refresh them on each new intent.
+    let lastWarm = 0;
+    const warmUp = (e: Event) => {
+      if (!(e.target as Element).closest?.('[data-play-episode]')) return;
+      if (Date.now() - lastWarm < 8000) return;
+      lastWarm = Date.now();
+      ['https://www.buzzsprout.com', 'https://audio.buzzsprout.com'].forEach((href) => {
+        const link = document.createElement('link');
+        link.rel = 'preconnect';
+        link.href = href;
+        document.head.appendChild(link);
+        setTimeout(() => link.remove(), 10000);
+      });
+    };
+    document.addEventListener('pointerover', warmUp, { passive: true });
+    document.addEventListener('touchstart', warmUp, { passive: true });
+    document.addEventListener('focusin', warmUp);
+
+    window.addEventListener('pagehide', save);
+
+    // ---- Restore after a full page load: same episode, same spot, paused ----
     try {
-      const saved = sessionStorage.getItem('inchunwa-player');
-      if (saved) {
-        const state = JSON.parse(saved);
-        const episodeId = state.audioUrl?.match(/\/(\d+)\.mp3/)?.[1];
-        if (episodeId) {
-          titleEl.textContent = state.title;
-          titleEl.href = state.episodeUrl || '#';
-          player.dataset.hidden = 'false';
-          // Don't auto-load iframe on restore — user must click play again
-        }
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+      if (saved?.audioUrl) {
+        load({ title: saved.title, audioUrl: saved.audioUrl, episodeUrl: saved.episodeUrl, artwork: saved.artwork }, saved.time || 0);
+        if (saved.rate) setRate(saved.rate);
+        if (saved.minimized) setMinimized(true);
+        if (saved.time) timeEl.textContent = `${formatTime(saved.time)} / --:--`;
       }
     } catch {}
   })();
@@ -117,38 +482,104 @@
     transform: translateY(0);
     transition: transform var(--transition-base);
     box-shadow: 0 -4px 20px rgba(31, 3, 0, 0.3);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
-  .audio-player[data-hidden="true"] {
+  .audio-player[data-hidden='true'] {
     transform: translateY(100%);
+    visibility: hidden;
   }
 
-  /* Bar: title row */
+  .audio-player__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding: var(--space-sm) var(--gutter);
+  }
+
+  .audio-player__main {
+    flex: 1;
+    min-width: 0;
+  }
+
   .audio-player__bar {
     display: flex;
     align-items: center;
     gap: var(--space-sm);
-    padding: var(--space-sm) var(--gutter);
-    max-width: var(--max-width);
-    margin-inline: auto;
-    border-block-end: 1px solid rgba(253, 250, 250, 0.08);
   }
 
-  .audio-player__minimize,
-  .audio-player__close {
+  /* Episode artwork, shown only while expanded */
+  .audio-player__art {
     flex-shrink: 0;
-    color: rgba(253, 250, 250, 0.5);
-    padding: 4px;
-    transition: color var(--transition-fast);
+    width: 128px;
+    height: 128px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    background: rgba(253, 250, 250, 0.08);
   }
 
-  .audio-player__minimize:hover,
-  .audio-player__close:hover {
-    color: var(--color-white);
+  .audio-player__art.is-pending {
+    visibility: hidden;
+  }
+
+  .audio-player.is-minimized .audio-player__art {
+    display: none;
+  }
+
+  /* Play / pause */
+  .audio-player__play {
+    position: relative;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--cta-bg);
+    color: var(--cta-text);
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .audio-player__play:hover {
+    background: var(--cta-hover);
+    transform: scale(1.05);
+  }
+
+  .audio-player__play .icon-play { margin-inline-start: 2px; }
+  .audio-player__play .icon-pause,
+  .audio-player.is-playing .audio-player__play .icon-play { display: none; }
+  .audio-player.is-playing .audio-player__play .icon-pause { display: block; }
+
+  .audio-player__spinner {
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: var(--color-pink);
+    opacity: 0;
+  }
+
+  .audio-player.is-loading .audio-player__spinner {
+    opacity: 1;
+    animation: player-spin 0.8s linear infinite;
+  }
+
+  @keyframes player-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Title + time */
+  .audio-player__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
   }
 
   .audio-player__title {
-    flex: 1;
     color: var(--color-white);
     font-size: var(--text-sm);
     font-weight: 600;
@@ -162,24 +593,191 @@
     color: var(--color-pink);
   }
 
-  /* Embed area */
-  .audio-player__embed {
-    max-width: var(--max-width);
-    margin-inline: auto;
-    overflow: hidden;
-    transition: max-height var(--transition-base);
-    max-height: 200px;
+  .audio-player__time {
+    font-size: var(--text-xs);
+    color: rgba(253, 250, 250, 0.65);
+    font-variant-numeric: tabular-nums;
   }
 
-  .audio-player__embed iframe {
+  /* Small buttons */
+  .audio-player__controls {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .audio-player__btn {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 4px;
+    border-radius: var(--radius-sm);
+    color: rgba(253, 250, 250, 0.7);
+    transition: color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .audio-player__btn:hover {
+    color: var(--color-white);
+    background: rgba(253, 250, 250, 0.08);
+  }
+
+  .audio-player__skip {
+    position: relative;
+  }
+
+  .audio-player__skip-label {
+    position: absolute;
+    font-size: 8px;
+    font-weight: 700;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -38%);
+  }
+
+  .audio-player__speed {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    min-width: 44px;
+  }
+
+  /* Seek bar: waveform drawn on a canvas, with an invisible range input on top
+     so dragging, tapping and keyboard seeking all still work */
+  .audio-player__seek-row {
+    position: relative;
+    height: 40px;
+    margin-block-start: var(--space-xs);
+    border-radius: var(--radius-sm);
+  }
+
+  .audio-player__wave {
     display: block;
     width: 100%;
-    height: 200px;
+    height: 100%;
+  }
+
+  .audio-player__seek {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .audio-player__seek-row:has(.audio-player__seek:focus-visible) {
+    outline: 2px solid var(--color-pink);
+    outline-offset: 2px;
+  }
+
+  /* Thin progress line along the top edge, shown only when minimized */
+  .audio-player__progress-line {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: var(--progress, 0%);
+    background: var(--color-pink);
+    pointer-events: none;
+  }
+
+  .audio-player.is-minimized .audio-player__progress-line {
+    display: block;
+  }
+
+  /* Minimized: keep play/pause, title and time; hide the rest */
+  .audio-player.is-minimized .audio-player__seek-row,
+  .audio-player.is-minimized .audio-player__controls {
+    display: none;
+  }
+
+  /* Slimmer bar when minimized */
+  .audio-player.is-minimized .audio-player__inner {
+    padding-block: 6px;
+  }
+
+  .audio-player.is-minimized .audio-player__play {
+    width: 36px;
+    height: 36px;
+  }
+
+  .audio-player.is-minimized .audio-player__play svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Buzzsprout embed, used only if direct audio can't load */
+  .audio-player__fallback {
+    padding-block-start: var(--space-xs);
+  }
+
+  .audio-player__fallback iframe {
+    display: block;
+    width: 100%;
     border: none;
   }
 
-  /* Minimized: hide the embed, only show bar */
-  .audio-player.is-minimized .audio-player__embed {
-    max-height: 0;
+  .audio-player.is-fallback .audio-player__play,
+  .audio-player.is-fallback .audio-player__controls,
+  .audio-player.is-fallback .audio-player__seek-row,
+  .audio-player.is-fallback .audio-player__time {
+    display: none;
+  }
+
+  .audio-player.is-fallback.is-minimized .audio-player__fallback {
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    .audio-player__speed {
+      display: none;
+    }
+
+    .audio-player__inner {
+      gap: var(--space-sm);
+    }
+
+    .audio-player__art {
+      width: 96px;
+      height: 96px;
+    }
+
+    .audio-player__seek-row {
+      height: 32px;
+    }
+
+    /* Next to the artwork there's no room for one row: title on top, buttons below */
+    .audio-player:not(.is-minimized) .audio-player__bar {
+      flex-wrap: wrap;
+      row-gap: var(--space-xs);
+    }
+
+    .audio-player:not(.is-minimized) .audio-player__info {
+      order: -1;
+      flex-basis: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .audio-player.is-loading .audio-player__spinner {
+      animation-duration: 2s;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Keep the page footer from hiding behind the player */
+  body:has(.audio-player[data-hidden='false']) {
+    padding-bottom: 168px;
+  }
+
+  body:has(.audio-player.is-minimized[data-hidden='false']) {
+    padding-bottom: 56px;
   }
 </style>

@@ -9,6 +9,8 @@
  *  - Episodes already in content/ are identified by their Buzzsprout episode ID
  *    (extracted from audioUrl) and skipped, so hand-edited metadata is preserved.
  *  - New episodes get a stub file with RSS data. Add series, tags, transcripts etc. manually.
+ *  - Existing episodes missing a coverImage get the episode artwork from the feed added;
+ *    nothing else in those files is touched.
  */
 
 import { writeFileSync, readFileSync, readdirSync } from 'node:fs';
@@ -109,17 +111,30 @@ function extractId(guidOrUrl) {
 // Existing episode IDs
 // ---------------------------------------------------------------------------
 
-function getExistingIds() {
-  const ids = new Set();
+/** Map of Buzzsprout episode ID -> filename for episodes already in content/ */
+function getExistingFiles() {
+  const files = new Map();
   for (const file of readdirSync(EPISODES_DIR).filter(f => f.endsWith('.md'))) {
     const content = readFileSync(join(EPISODES_DIR, file), 'utf8');
     const m = content.match(/audioUrl:\s*"([^"]+)"/);
     if (m) {
       const id = extractId(m[1]);
-      if (id) ids.add(id);
+      if (id) files.set(id, file);
     }
   }
-  return ids;
+  return files;
+}
+
+/** Add coverImage to an existing episode's frontmatter if it has none. Returns true if changed. */
+function backfillCoverImage(file, coverImage) {
+  const path = join(EPISODES_DIR, file);
+  const content = readFileSync(path, 'utf8');
+  const frontmatter = content.match(/^---\n([\s\S]*?)\n---/);
+  if (!frontmatter || /^coverImage:/m.test(frontmatter[1])) return false;
+  const updated = content.replace(/^(audioUrl:.*)$/m, `$1\ncoverImage: "${yamlStr(coverImage)}"`);
+  if (updated === content) return false;
+  writeFileSync(path, updated, 'utf8');
+  return true;
 }
 
 // ---------------------------------------------------------------------------
@@ -150,8 +165,10 @@ function parseEpisode(item) {
   const audioLength = parseInt(extractAttr(item, 'enclosure', 'length'), 10) || null;
 
   const audioUrl = `https://www.buzzsprout.com/${PODCAST_ID}/episodes/${episodeId}.mp3`;
+  // Per-episode artwork; episodes without their own fall back to the show art on the site
+  const coverImage = extractAttr(item, 'itunes:image', 'href');
 
-  return { id: episodeId, title, description, pubDate: pubDateFormatted, episodeNumber, episodeType, duration, audioUrl, audioLength, explicit };
+  return { id: episodeId, title, description, pubDate: pubDateFormatted, episodeNumber, episodeType, duration, audioUrl, audioLength, explicit, coverImage };
 }
 
 // ---------------------------------------------------------------------------
@@ -171,6 +188,7 @@ function generateMarkdown(ep) {
   lines.push(`duration: "${ep.duration}"`);
   lines.push(`audioUrl: "${ep.audioUrl}"`);
   if (ep.audioLength) lines.push(`audioLength: ${ep.audioLength}`);
+  if (ep.coverImage) lines.push(`coverImage: "${yamlStr(ep.coverImage)}"`);
   lines.push(`explicit: ${ep.explicit}`);
   lines.push('featured: false');
   lines.push('tags: []');
@@ -198,17 +216,26 @@ async function main() {
   if (!res.ok) throw new Error(`RSS fetch failed: ${res.status} ${res.statusText}`);
   const xml = await res.text();
 
-  const existing = getExistingIds();
+  const existing = getExistingFiles();
   console.log(`Existing episodes: ${existing.size}`);
 
   const items = parseItems(xml);
   console.log(`Feed episodes:     ${items.length}`);
 
   let created = 0;
+  let artAdded = 0;
   for (const item of items) {
     const ep = parseEpisode(item);
     if (!ep) { console.log('  [skip] could not parse item'); continue; }
-    if (existing.has(ep.id)) { console.log(`  [skip] ${ep.title}`); continue; }
+    if (existing.has(ep.id)) {
+      if (ep.coverImage && backfillCoverImage(existing.get(ep.id), ep.coverImage)) {
+        console.log(`  [art]  ${ep.title}`);
+        artAdded++;
+      } else {
+        console.log(`  [skip] ${ep.title}`);
+      }
+      continue;
+    }
 
     const filename = generateFilename(ep);
     writeFileSync(join(EPISODES_DIR, filename), generateMarkdown(ep), 'utf8');
@@ -216,7 +243,7 @@ async function main() {
     created++;
   }
 
-  console.log(`\nDone — ${created} new episode(s) created.`);
+  console.log(`\nDone — ${created} new episode(s) created, artwork added to ${artAdded}.`);
 }
 
 main().catch(err => { console.error(err); process.exit(1); });
